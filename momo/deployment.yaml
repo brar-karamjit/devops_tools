@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: momentinmotion-deployment
+  # Must be deployed in the correct namespace
+  namespace: momo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: momo
+  template:
+    metadata:
+      labels:
+        app: momo
+    spec:
+      # CRITICAL: This references the secret created in Step 2
+      imagePullSecrets:
+      - name: ghcr-secret-momo
+      containers:
+      - name: app-container
+        # Replace with the path to your actual private image in GHCR
+        image: ghcr.io/brar-karamjit/moment_in_motion:latest 
+        ports:
+        - containerPort: 8080
