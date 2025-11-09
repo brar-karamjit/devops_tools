@@ -1,1 +1,1 @@
-this folder contains gitops related files for moment In Motion app (short momo)
+This folder contains gitops related files for moment In Motion app (short momo)
