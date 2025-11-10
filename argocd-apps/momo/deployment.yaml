@@ -1,0 +1,39 @@
+# File: devops_tools/momo/deployment.yaml
+# K8s manifests for the Moment In Motion application.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: momo-deployment
+  namespace: momo # Target namespace
+  labels:
+    app: momo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: momo
+  template:
+    metadata:
+      labels:
+        app: momo
+    spec:
+      containers:
+      - name: momo-app
+        # Pulling the application image from GHCR
+        image: ghcr.io/brar-karamjit/moment_in_motion:latest
+        ports:
+        - containerPort: 8080 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: momo-service
+  namespace: momo # Target namespace
+spec:
+  selector:
+    app: momo
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP
