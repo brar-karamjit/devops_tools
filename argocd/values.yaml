@@ -1,0 +1,5 @@
+configs:
+  cm:
+    admin.enabled: true # -- Enable local admin user
+    timeout.reconciliation: 15s # -- Timeout to discover if a new manifests version got published to the repository
+    timeout.hard.reconciliation: 0s # -- Timeout to refresh application data as well as target manifests cache
