@@ -1,1 +1,0 @@
-This folder contains gitops related files for Inventory Management app (short invm)

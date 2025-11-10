@@ -1,5 +1,13 @@
 #configurations for ArgoCD used in Helm chart deployment
 
+server:
+  # Configuration for the Argo CD API server and UI service
+  service:
+    # Change the Kubernetes Service type from the default (ClusterIP or LoadBalancer, depending on values) to NodePort.
+    type: NodePort
+
+    nodePort: 30011
+
 configs:
   cm:
     admin.enabled: true # -- Enable local admin user
