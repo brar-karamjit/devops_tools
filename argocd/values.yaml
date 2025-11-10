@@ -1,3 +1,5 @@
+#configurations for ArgoCD used in Helm chart deployment
+
 configs:
   cm:
     admin.enabled: true # -- Enable local admin user

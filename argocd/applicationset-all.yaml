@@ -1,0 +1,50 @@
+# File: devops_tools/argocd/applicationset-all.yaml
+# This ApplicationSet automatically discovers and deploys any folder
+# that contains Kubernetes manifests under the repository root.
+
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: all-apps-generator
+  namespace: argocd
+spec:
+  # ----------------------------------------------------
+  # 1. GENERATOR: Scans the specified Git repository for folders
+  # ----------------------------------------------------
+  generators:
+  - git:
+      # Explicitly pointing to your devops_tools repository
+      repoURL: https://github.com/brar-karamjit/devops_tools
+      revision: HEAD
+      # Scanning only directories one level deep inside 'argocd-apps/'
+      directories:
+      - path: 'argocd-apps/*' 
+  
+  # ----------------------------------------------------
+  # 2. TEMPLATE: Creates an Argo CD Application for each folder found
+  # ----------------------------------------------------
+  template:
+    metadata:
+      # Use the folder name (e.g., 'momo', 'zuzu') to name the Application
+      # {{path.basename}} correctly extracts 'momo' from 'argocd-apps/momo'
+      name: '{{path.basename}}-app'
+      namespace: argocd
+      labels:
+        app.kubernetes.io/name: '{{path.basename}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/brar-karamjit/devops_tools
+        targetRevision: HEAD
+        # The path to the manifests is the folder discovered by the generator (e.g., 'argocd-apps/momo')
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        # Deploy to a namespace named after the application folder (e.g., 'momo')
+        namespace: '{{path.basename}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
