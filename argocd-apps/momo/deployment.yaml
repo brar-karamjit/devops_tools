@@ -37,3 +37,26 @@ spec:
       port: 80
       targetPort: 8080
   type: ClusterIP
+
+---
+#Ingress Resource for external access
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: momo-ingress
+  namespace: momo 
+  annotations:
+   nginx.ingress.kubernetes.io/rewrite-target: / 
+spec:
+  ingressClassName: nginx 
+  rules:
+  - host: k8s.karamjitbrar.com # Traffic for this host...
+    http:
+      paths:
+      - path: /momo # ...with this path...
+        pathType: Prefix
+        backend:
+          service:
+            name: momo-service # ...is routed to this Service...
+            port:
+              number: 80 # ...on this port.
