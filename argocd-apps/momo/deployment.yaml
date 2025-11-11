@@ -50,13 +50,13 @@ metadata:
 spec:
   ingressClassName: nginx 
   rules:
-  - host: k8s.karamjitbrar.com # The host for the Ingress
+  - host: k8s.karamjitbrar.com # Traffic for this host...
     http:
       paths:
-      - path: /momo # The path for the Ingress
+      - path: /momo # ...with this path...
         pathType: Prefix
         backend:
           service:
-            name: momo-service 
+            name: momo-service # ...is routed to this Service...
             port:
-              number: 80
+              number: 80 # ...on this port.
