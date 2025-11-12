@@ -29,5 +29,4 @@ configs:
   # 3. **Set the root path for the ArgoCD server application itself**
   params:
     server.rootpath: /argocd
-    # server.basehref is another setting for the UI, but server.rootpath is generally sufficient 
-    # and preferred for setting the base path for both UI and API.
+    
