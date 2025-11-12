@@ -1,7 +1,6 @@
 # configurations for ArgoCD used in Helm chart deployment
 
 server:
-  # 1. Change the service type to ClusterIP
   service:
     type: ClusterIP
 
