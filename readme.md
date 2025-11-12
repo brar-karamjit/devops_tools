@@ -1,121 +1,125 @@
 # DevOps Tools Repository
 
-This repository contains DevOps configurations and tools for managing Kubernetes applications using ArgoCD. It provides automated deployment pipelines for multiple applications through GitOps practices.
+This repository stores DevOps manifests and helpers for deploying multiple applications to Kubernetes using ArgoCD (GitOps).
 
-## Repository Structure
+## Table of contents
+
+- Repository layout
+- Quickstart (install ArgoCD + deploy)
+- How Application folders work
+- Adding & updating apps
+- Troubleshooting
+
+## Repository layout
+
+Top-level structure (important files and folders):
 
 ```
 devops_tools/
-├── argocd/
-│   ├── applicationset-all.yaml    # ArgoCD ApplicationSet for auto-discovering apps
-│   └── values.yaml                # ArgoCD Helm chart values
-├── argocd-apps/
-│   ├── invm/                      # Inventory Manager application manifests
+├── argocd/               # ArgoCD controller install values & ApplicationSet
+│   ├── applicationset-all.yaml
+│   └── values.yaml
+├── argocd-apps/          # Application manifests (one subfolder per app)
+│   ├── invm/             # Inventory Manager (Django)
 │   │   └── readme.md
-│   └── momo/                      # Moment in Motion application manifests
+│   └── momo/             # Moment In Motion (Django)
 │       ├── deployment.yaml
 │       └── readme.md
-└── readme.md                      # This file
+├── readme.md             # This file
 ```
 
-## Applications
+Note: the layout above mirrors how the included `applicationset-all.yaml` discovers and generates ArgoCD Applications — each subfolder in `argocd-apps/` represents a single app.
 
-### Inventory Manager (invm)
-A Django-based inventory management system with barcode scanning capabilities.
+## Quickstart
 
-### Moment in Motion (momo)
-A motion tracking application built with Django.
+Prerequisites:
 
-## Prerequisites
+- A Kubernetes cluster
+- kubectl configured to access the cluster
+- Helm (recommended for installing ArgoCD)
 
-- Kubernetes cluster
-- ArgoCD installed in the cluster
-- Helm (for ArgoCD installation)
-- kubectl configured to access your cluster
-
-## Installation and Setup
-
-### 1. Install ArgoCD
+1) Install ArgoCD (example using Helm):
 
 ```bash
-# Add ArgoCD Helm repository
+# add argo helm repo
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 
-# Install ArgoCD with custom values
+# install with the provided values file
 helm install argocd argo/argo-cd -f ./argocd/values.yaml -n argocd --create-namespace
 ```
 
-### 2. Access ArgoCD UI
+2) Access the ArgoCD UI:
 
 ```bash
-# Get ArgoCD admin password
+# get initial admin password
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
-# Port forward to access UI (or use NodePort 30011 if configured)
+# port-forward the server (optional)
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
 
-Navigate to https://localhost:8080 and login with username `admin` and the password from above.
+Browse to https://localhost:8080 and sign in as `admin` with the password from the secret.
 
-### 3. Deploy ApplicationSet
-
-Apply the ApplicationSet to automatically create ArgoCD applications for each app in the `argocd-apps/` directory:
+3) Deploy the ApplicationSet to generate apps from `argocd-apps/`:
 
 ```bash
 kubectl apply -f argocd/applicationset-all.yaml
 ```
 
-This will:
-- Scan the `argocd-apps/` directory for subfolders
-- Create an ArgoCD Application for each folder found
-- Deploy the applications to namespaces matching the folder names
+This ApplicationSet will:
 
-## Adding New Applications
+- scan `argocd-apps/` for subfolders
+- create an ArgoCD Application resource for each subfolder
+- target the namespace matching the folder name by default (check the ApplicationSet template)
 
-1. Create a new folder under `argocd-apps/` (e.g., `argocd-apps/myapp/`)
-2. Add your Kubernetes manifests to the folder
-3. Add a `readme.md` describing the application
-4. Commit and push changes
-5. ArgoCD will automatically detect and deploy the new application
+## How application folders should look
 
-## Application Manifest Requirements
+Each application folder under `argocd-apps/` should generally contain:
 
-Each application folder should contain:
-- Kubernetes manifests (deployments, services, configmaps, etc.)
-- A `readme.md` file describing the application
-- Proper namespace declarations in manifests (will be created automatically)
+- Kubernetes manifests (Deployment, Service, ConfigMap, Ingress, etc.) or a kustomize/helm chart
+- a `readme.md` describing the application and any special deployment notes
+- (optional) a `namespace` manifest, or rely on the ApplicationSet to create a namespace
 
-## Updating Applications
+Keep each app self-contained so the ApplicationSet can treat each folder as an independent unit.
 
-Simply update the manifests in the respective `argocd-apps/<app>/` folder and commit. ArgoCD will automatically sync the changes due to the automated sync policy.
+## Adding and updating apps
+
+To add a new app:
+
+1. Create `argocd-apps/<app-name>/` and add manifests and `readme.md`
+2. Commit and push to the repo
+3. The ApplicationSet will detect the new folder and create the ArgoCD Application automatically
+
+To update an app, modify the manifests in the corresponding folder and commit; ArgoCD will sync the changes according to your sync policy.
 
 ## Troubleshooting
 
-### Check Application Status
+Check ArgoCD Application resources and status:
+
 ```bash
 kubectl get applications -n argocd
+kubectl describe application <app-name> -n argocd
 ```
 
-### View Application Logs
+View pod logs in the target namespace:
+
 ```bash
-kubectl logs -n <app-namespace> deployment/<app-deployment>
+kubectl logs -n <app-namespace> deployment/<deployment-name>
 ```
 
-### Manual Sync
-If auto-sync fails, manually sync through ArgoCD UI or CLI:
+If auto-sync fails, you can manually sync via the ArgoCD CLI or UI:
+
 ```bash
 argocd app sync <app-name>
 ```
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Add your application manifests
-4. Test deployment
-5. Submit a pull request
+1. Fork and branch
+2. Add or update app folders under `argocd-apps/`
+3. Test your changes and open a PR
 
 ## License
 
-This repository is licensed under the MIT License.
+MIT
