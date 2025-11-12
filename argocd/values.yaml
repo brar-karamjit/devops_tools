@@ -1,13 +1,34 @@
-#configurations for ArgoCD used in Helm chart deployment
+# configurations for ArgoCD used in Helm chart deployment
 
 server:
-  # Configuration for the Argo CD API server and UI service
+  # 1. Change the service type to ClusterIP
   service:
-    # Change the Kubernetes Service type from the default (ClusterIP or LoadBalancer, depending on values) to NodePort.
-    type: NodePort
+    type: ClusterIP
+
+  # 2. Configure the Ingress resource
+  ingress:
+    enabled: true
+    ingressClassName: nginx 
+    hostname: k8s.karamjitbrar.com 
+    path: /argocd
+    pathType: Prefix
+    
+    annotations:
+      # Crucial for NGINX to handle the gRPC traffic for the ArgoCD CLI
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      # Forces all HTTP traffic to be redirected to HTTPS (Highly Recommended)
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      # Optional: NGINX Ingress must rewrite the path to send only '/' to the ArgoCD Service
+      nginx.ingress.kubernetes.io/rewrite-target: /$2 # This is often required for path-based routing
 
 configs:
   cm:
-    admin.enabled: true # -- Enable local admin user
-    timeout.reconciliation: 15s # -- Timeout to discover if a new manifests version got published to the repository
-    timeout.hard.reconciliation: 0s # -- Timeout to refresh application data as well as target manifests cache
+    admin.enabled: true
+    timeout.reconciliation: 15s
+    timeout.hard.reconciliation: 0s
+  
+  # 3. **Set the root path for the ArgoCD server application itself**
+  params:
+    server.rootpath: /argocd
+    # server.basehref is another setting for the UI, but server.rootpath is generally sufficient 
+    # and preferred for setting the base path for both UI and API.
