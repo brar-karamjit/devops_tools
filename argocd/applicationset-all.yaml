@@ -9,7 +9,7 @@ metadata:
   namespace: argocd
 spec:
   # ----------------------------------------------------
-  # 1. GENERATOR: Scans the specified Git repository for folders
+  # 1. GENERATOR: Scans the devops_tools Git repository for folders
   # ----------------------------------------------------
   generators:
   - git:
