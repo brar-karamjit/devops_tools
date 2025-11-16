@@ -21,7 +21,7 @@ server:
     tls:
       - hosts:
           - k8s.karamjitbrar.com
-        secretName: k8s-tls  # the self-signed cert secret
+        secretName: k8s-tls  # the signed secret
 
 configs:
   cm:
