@@ -17,3 +17,8 @@ controller:
     type: ClusterIP
 
   reportNodeInternalIp: true
+
+# Enable the default backend (returns 404 for unmatched requests).
+# This key is expected by the upstream ingress-nginx Helm chart.
+defaultBackend:
+  enabled: true
