@@ -17,9 +17,7 @@ server:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       # Forces all HTTP traffic to be redirected to HTTPS (Highly Recommended)
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      # Optional: NGINX Ingress must rewrite the path to send only '/' to the ArgoCD Service
-      nginx.ingress.kubernetes.io/rewrite-target: /$2 # This is often required for path-based routing
-
+      
     tls:
       - hosts:
           - k8s.karamjitbrar.com
