@@ -16,6 +16,4 @@ controller:
     # via the HostPort configuration above.
     type: ClusterIP
 
-  # We recommend setting this to true when using hostNetwork to ensure
-  # Ingress status shows the internal IP of the node.
   reportNodeInternalIp: true
