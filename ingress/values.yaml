@@ -1,4 +1,7 @@
-# values.yaml for NodePort exposure
 controller:
   service:
-    type: NodePort
+    type: ClusterIP
+  extraArgs:
+    enable-ssl-passthrough: ""
+  hostPort:
+    https: 443
