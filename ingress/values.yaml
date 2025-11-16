@@ -1,14 +1,6 @@
 controller:
-  # Sets the controller deployment as a DaemonSet to ensure it runs on every node.
-  kind: DaemonSet
-
-  # Enable hostNetwork so the pod can use the host's network namespace.
-  # This is often required when using hostPort.
   hostNetwork: true
 
-  # --- hostPort Configuration ---
-  # This section configures the pod to bind ports 80 and 443 directly
-  # to the network interface of the node where the pod is running.
   hostPort:
     # -- Enable 'hostPort'
     enabled: true
@@ -18,9 +10,7 @@ controller:
       # -- 'hostPort' https port
       https: 443
 
-  # The Service object needs to be configured to use ClusterIP (or often be disabled)
-  # since external traffic is hitting the Node's IP directly, bypassing the service
-  # for the initial traffic routing.
+
   service:
     # Set to ClusterIP as the main traffic is expected to hit the Node directly
     # via the HostPort configuration above.
