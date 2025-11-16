@@ -20,6 +20,11 @@ server:
       # Optional: NGINX Ingress must rewrite the path to send only '/' to the ArgoCD Service
       nginx.ingress.kubernetes.io/rewrite-target: /$2 # This is often required for path-based routing
 
+    tls:
+      - hosts:
+          - k8s.karamjitbrar.com
+        secretName: k8s-tls  # the self-signed cert secret
+
 configs:
   cm:
     admin.enabled: true
