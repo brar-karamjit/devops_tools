@@ -10,7 +10,6 @@ controller:
       # -- 'hostPort' https port
       https: 443
 
-
   service:
     # Set to ClusterIP as the main traffic is expected to hit the Node directly
     # via the HostPort configuration above.
@@ -18,7 +17,3 @@ controller:
 
   reportNodeInternalIp: true
 
-# Enable the default backend (returns 404 for unmatched requests).
-# This key is expected by the upstream ingress-nginx Helm chart.
-defaultBackend:
-  enabled: true
