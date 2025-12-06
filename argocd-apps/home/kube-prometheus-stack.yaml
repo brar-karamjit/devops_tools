@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+  labels:
+    app.kubernetes.io/managed-by: home
+spec:
+  project: default
+  destination:
+    namespace: home
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 65.5.0
+    chart: kube-prometheus-stack
+    helm:
+      releaseName: home-kube-prometheus
+      values: |
+        fullnameOverride: home-kube-prometheus
+        grafana:
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            annotations:
+              kubernetes.io/ingress.class: nginx
+              nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+            hosts:
+              - k8s.karamjitbrar.com
+            path: /
+            pathType: Prefix
+            tls:
+              - secretName: k8s-tls
+                hosts:
+                  - k8s.karamjitbrar.com
+          grafana.ini:
+            server:
+              root_url: https://k8s.karamjitbrar.com/
+            security:
+              allow_embedding: true
+            auth.anonymous:
+              enabled: true
+              org_role: Viewer
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
