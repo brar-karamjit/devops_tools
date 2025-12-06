@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: home-page
+  namespace: home
   labels:
     app: home-page
 spec:
@@ -29,3 +30,18 @@ spec:
               value: Viewer
             - name: GF_SECURITY_ALLOW_EMBEDDING
               value: "true"
+            - name: GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH
+              value: /var/lib/grafana/dashboards/home/home-dashboard.json
+          volumeMounts:
+            - name: grafana-dashboard
+              mountPath: /var/lib/grafana/dashboards/home
+            - name: grafana-provisioning
+              mountPath: /etc/grafana/provisioning/dashboards/home.yaml
+              subPath: home-dashboards.yaml
+      volumes:
+        - name: grafana-dashboard
+          configMap:
+            name: home-grafana-dashboard
+        - name: grafana-provisioning
+          configMap:
+            name: home-grafana-provisioning
