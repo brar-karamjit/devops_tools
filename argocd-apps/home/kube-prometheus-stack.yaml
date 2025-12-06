@@ -16,6 +16,7 @@ spec:
     chart: kube-prometheus-stack
     helm:
       releaseName: home-kube-prometheus
+      skipCrds: false
       values: |
         fullnameOverride: home-kube-prometheus
         grafana:
@@ -226,3 +227,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
