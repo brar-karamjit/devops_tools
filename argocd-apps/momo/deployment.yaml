@@ -20,7 +20,7 @@ spec:
       containers:
       - name: momo-app
         # Pulling the application image from GHCR
-        image: ghcr.io/brar-karamjit/moment_in_motion:latest
+        image: ghcr.io/brar-karamjit/momentinmotion:latest
         ports:
         - containerPort: 8080 
 ---
