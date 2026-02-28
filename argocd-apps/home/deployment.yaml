@@ -84,7 +84,8 @@ data:
           <h2>Deployed Apps</h2>
           <ul class="app-list">
             <li><a href="/momo">Moment in Motion</a></li>
-            <li><a href="/hello">Hello Service</a></li>
+            <li><a href="/argocd">ArgoCD</a></li>
+            <li><a href="/grafana">Grafana</a></li>
           </ul>
         </div>
 
