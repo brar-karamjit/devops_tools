@@ -1,10 +1,10 @@
-# File: devops_tools/argocd-apps/404/deployment.yaml
+# File: devops_tools/argocd-apps/error-page/deployment.yaml
 # Custom 404 error page — default backend for nginx-ingress
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: custom-error-pages
-  namespace: "404"
+  namespace: error-page
 data:
   "404.html": |
     <!DOCTYPE html>
@@ -70,7 +70,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: custom-error-backend
-  namespace: "404"
+  namespace: error-page
   labels:
     app: custom-error-backend
 spec:
@@ -118,7 +118,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: custom-error-backend
-  namespace: "404"
+  namespace: error-page
 spec:
   selector:
     app: custom-error-backend
