@@ -64,6 +64,7 @@ metadata:
   namespace: momo 
   annotations:
    nginx.ingress.kubernetes.io/rewrite-target: / 
+  nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: nginx 
   rules:
@@ -77,3 +78,7 @@ spec:
             name: momo-service 
             port:
               number: 80
+  tls:
+  - secretName: k8s-tls
+    hosts:
+    - k8s.karamjitbrar.com
