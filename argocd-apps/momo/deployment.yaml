@@ -21,6 +21,7 @@ spec:
       - name: momo-app
         # Pulling the application image from GHCR
         image: ghcr.io/brar-karamjit/momentinmotion:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000 
         env:
@@ -40,6 +41,8 @@ spec:
           value: "False"
         - name: DJANGO_ALLOWED_HOSTS
           value: "k8s.karamjitbrar.com"
+        - name: DJANGO_FORCE_SCRIPT_NAME
+          value: "/momo"
 ---
 apiVersion: v1
 kind: Service
@@ -63,15 +66,18 @@ metadata:
   name: momo-ingress
   namespace: momo 
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: / 
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header X-Forwarded-Prefix /momo;
 spec:
   ingressClassName: nginx 
   rules:
   - host: k8s.karamjitbrar.com # The host for the Ingress
     http:
       paths:
-      - path: /momo # The path for the Ingress
+      - path: /momo(/|$)(.*) # The path for the Ingress
         pathType: Prefix
         backend:
           service:
