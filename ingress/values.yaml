@@ -17,3 +17,7 @@ controller:
 
   reportNodeInternalIp: true
 
+  # Use the custom 404 error backend for all unmatched routes
+  extraArgs:
+    default-backend-service: "404/custom-error-backend"
+
