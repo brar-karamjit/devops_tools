@@ -22,7 +22,7 @@ spec:
         # Pulling the application image from GHCR
         image: ghcr.io/brar-karamjit/momentinmotion:latest
         ports:
-        - containerPort: 8080 
+        - containerPort: 8000 
         env:
         - name: HELLO_SERVICE_URL
           value: "http://hello-service.hello.svc.cluster.local"
@@ -52,7 +52,7 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8080
+      targetPort: 8000
   type: ClusterIP
 
 ---
