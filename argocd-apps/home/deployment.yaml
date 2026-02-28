@@ -1,0 +1,168 @@
+# File: devops_tools/argocd-apps/home/deployment.yaml
+# K8s Lab welcome page — served at /
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: home-page
+  namespace: home
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>K8s Lab — Karamjit Brar</title>
+      <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center}
+        .container{max-width:720px;width:90%;text-align:center;padding:3rem 2rem}
+        h1{font-size:2.4rem;font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .subtitle{color:#94a3b8;font-size:1.1rem;margin-bottom:2.5rem}
+        .card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.8rem;margin-bottom:1.5rem;text-align:left}
+        .card h2{font-size:1.1rem;color:#38bdf8;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+        .card h2::before{content:'⎈';font-size:1.3rem}
+        .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem .8rem}
+        .info-item{display:flex;flex-direction:column}
+        .info-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:#64748b}
+        .info-value{font-size:.95rem;color:#cbd5e1}
+        .apps{margin-top:1.5rem}
+        .apps h2::before{content:'📦'}
+        .app-list{list-style:none;display:flex;flex-wrap:wrap;gap:.6rem}
+        .app-list a{display:inline-block;padding:.45rem 1rem;background:#334155;border-radius:8px;color:#e2e8f0;text-decoration:none;font-size:.9rem;transition:background .2s}
+        .app-list a:hover{background:#475569}
+        .footer{margin-top:2.5rem;color:#475569;font-size:.8rem}
+        .footer a{color:#64748b;text-decoration:none}
+        .footer a:hover{color:#94a3b8}
+        @media(max-width:480px){h1{font-size:1.8rem}.info-grid{grid-template-columns:1fr}}
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>Welcome to the K8s Lab</h1>
+        <p class="subtitle">A personal Kubernetes playground by Karamjit Brar</p>
+
+        <div class="card">
+          <h2>Cluster Overview</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Platform</span>
+              <span class="info-value">Oracle Cloud (OCI) — ARM</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Architecture</span>
+              <span class="info-value">aarch64 (arm64)</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Host OS</span>
+              <span class="info-value">Oracle Linux 9.6</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Kernel</span>
+              <span class="info-value">6.12.0 UEK</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Ingress</span>
+              <span class="info-value">NGINX Ingress Controller</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">GitOps</span>
+              <span class="info-value">ArgoCD + ApplicationSets</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">CI / CD</span>
+              <span class="info-value">GitHub Actions → GHCR</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">TLS</span>
+              <span class="info-value">Let's Encrypt / cert-manager</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card apps">
+          <h2>Deployed Apps</h2>
+          <ul class="app-list">
+            <li><a href="/momo">Moment in Motion</a></li>
+            <li><a href="/hello">Hello Service</a></li>
+          </ul>
+        </div>
+
+        <p class="footer">
+          <a href="https://github.com/brar-karamjit" target="_blank" rel="noopener">GitHub</a>
+          &nbsp;·&nbsp;
+          <a href="https://karamjitbrar.com" target="_blank" rel="noopener">Portfolio</a>
+        </p>
+      </div>
+    </body>
+    </html>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-deployment
+  namespace: home
+  labels:
+    app: home
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: home
+  template:
+    metadata:
+      labels:
+        app: home
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+          readOnly: true
+      volumes:
+      - name: html
+        configMap:
+          name: home-page
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: home-service
+  namespace: home
+spec:
+  selector:
+    app: home
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: home-ingress
+  namespace: home
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: k8s.karamjitbrar.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: home-service
+            port:
+              number: 80
+  tls:
+  - secretName: k8s-tls
+    hosts:
+    - k8s.karamjitbrar.com
