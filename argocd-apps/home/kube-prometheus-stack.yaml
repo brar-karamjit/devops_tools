@@ -205,7 +205,7 @@ spec:
               nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
             hosts:
               - k8s.karamjitbrar.com
-            path: /
+            path: /grafana
             pathType: Prefix
             tls:
               - secretName: k8s-tls
@@ -213,7 +213,8 @@ spec:
                   - k8s.karamjitbrar.com
           grafana.ini:
             server:
-              root_url: https://k8s.karamjitbrar.com/
+              root_url: https://k8s.karamjitbrar.com/grafana/
+              serve_from_sub_path: true
             security:
               allow_embedding: true
             auth.anonymous:
