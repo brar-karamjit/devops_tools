@@ -6,7 +6,7 @@ metadata:
   name: home-page
   namespace: home
 data:
-  index.html: |
+  home/index.html: |
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -156,7 +156,7 @@ spec:
   - host: k8s.karamjitbrar.com
     http:
       paths:
-      - path: /
+      - path: /home
         pathType: Prefix
         backend:
           service:
