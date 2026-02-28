@@ -76,7 +76,7 @@ spec:
     http:
       paths:
       - path: /momo(/|$)(.*) # The path for the Ingress
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: momo-service 
