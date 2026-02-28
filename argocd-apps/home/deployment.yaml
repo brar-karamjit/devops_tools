@@ -6,7 +6,7 @@ metadata:
   name: home-page
   namespace: home
 data:
-  home/index.html: |
+  home-index.html: |
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -121,9 +121,10 @@ spec:
         ports:
         - containerPort: 80
         volumeMounts:
-        - name: html
-          mountPath: /usr/share/nginx/html
-          readOnly: true
+          - name: html
+            mountPath: /usr/share/nginx/html/home/index.html
+            subPath: home-index.html
+            readOnly: true
       volumes:
       - name: html
         configMap:
