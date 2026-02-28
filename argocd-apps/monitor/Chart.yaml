@@ -1,0 +1,8 @@
+apiVersion: v2
+name: monitor
+version: 0.1.0
+description: Wrapper chart for kube-prometheus-stack
+dependencies:
+  - name: kube-prometheus-stack
+    version: 65.5.0
+    repository: https://prometheus-community.github.io/helm-charts
