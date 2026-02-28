@@ -26,11 +26,20 @@ spec:
         env:
         - name: HELLO_SERVICE_URL
           value: "http://hello-service.hello.svc.cluster.local"
+        - name: DJANGO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: momo-secrets
+              key: django-secret-key
         - name: GEMINI_API_KEY
           valueFrom:
             secretKeyRef:
               name: momo-secrets
               key: gemini-api-key
+        - name: DJANGO_DEBUG
+          value: "False"
+        - name: DJANGO_ALLOWED_HOSTS
+          value: "k8s.karamjitbrar.com"
 ---
 apiVersion: v1
 kind: Service

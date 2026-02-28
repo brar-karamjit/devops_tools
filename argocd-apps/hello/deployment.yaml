@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: hello
-        image: your-registry/hello-service:latest
+        image: ghcr.io/brar-karamjit/hello-service:latest
         ports:
         - containerPort: 80
 ---
