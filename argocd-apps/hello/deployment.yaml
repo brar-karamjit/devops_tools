@@ -37,6 +37,7 @@ spec:
   type: ClusterIP
 
 # a simple ingress so the app can be accessed externally if desired
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
