@@ -1,0 +1,231 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+  labels:
+    app.kubernetes.io/managed-by: monitor
+spec:
+  project: default
+  destination:
+    namespace: monitor
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 65.5.0
+    chart: kube-prometheus-stack
+    helm:
+      releaseName: home-kube-prometheus
+      skipCrds: false
+      values: |
+        fullnameOverride: home-kube-prometheus
+        grafana:
+          dashboardProviders:
+            dashboardproviders.yaml:
+              apiVersion: 1
+              providers:
+                - name: home
+                  orgId: 1
+                  folder: Home
+                  type: file
+                  disableDeletion: false
+                  editable: true
+                  options:
+                    path: /var/lib/grafana/dashboards/home
+          dashboards:
+            home:
+              moment-home:
+                json: |
+                  {
+                    "id": null,
+                    "uid": "moment-home",
+                    "title": "Cluster Pulse",
+                    "tags": ["live", "kubernetes"],
+                    "timezone": "browser",
+                    "schemaVersion": 39,
+                    "version": 1,
+                    "refresh": "30s",
+                    "style": "dark",
+                    "time": {
+                      "from": "now-6h",
+                      "to": "now"
+                    },
+                    "timepicker": {
+                      "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m"],
+                      "show": true
+                    },
+                    "panels": [
+                      {
+                        "id": 1,
+                        "type": "stat",
+                        "title": "Running Pods",
+                        "datasource": {"type": "prometheus", "uid": "prometheus"},
+                        "targets": [
+                          {
+                            "expr": "sum(kube_pod_status_phase{phase=\"Running\"})",
+                            "refId": "A"
+                          }
+                        ],
+                        "fieldConfig": {
+                          "defaults": {
+                            "unit": "short",
+                            "thresholds": {
+                              "mode": "absolute",
+                              "steps": [
+                                {"color": "green"},
+                                {"color": "orange", "value": 500},
+                                {"color": "red", "value": 800}
+                              ]
+                            }
+                          },
+                          "overrides": []
+                        },
+                        "options": {
+                          "colorMode": "value",
+                          "graphMode": "none",
+                          "justifyMode": "auto"
+                        },
+                        "gridPos": {"h": 5, "w": 6, "x": 0, "y": 0}
+                      },
+                      {
+                        "id": 2,
+                        "type": "gauge",
+                        "title": "Node CPU Usage",
+                        "datasource": {"type": "prometheus", "uid": "prometheus"},
+                        "targets": [
+                          {
+                            "expr": "sum(rate(node_cpu_seconds_total{mode!=\"idle\"}[5m])) / sum(rate(node_cpu_seconds_total[5m])) * 100",
+                            "refId": "A"
+                          }
+                        ],
+                        "fieldConfig": {
+                          "defaults": {
+                            "unit": "percent",
+                            "min": 0,
+                            "max": 100,
+                            "thresholds": {
+                              "mode": "percentage",
+                              "steps": [
+                                {"color": "green", "value": null},
+                                {"color": "orange", "value": 70},
+                                {"color": "red", "value": 90}
+                              ]
+                            }
+                          },
+                          "overrides": []
+                        },
+                        "gridPos": {"h": 5, "w": 6, "x": 6, "y": 0}
+                      },
+                      {
+                        "id": 3,
+                        "type": "gauge",
+                        "title": "Cluster Memory Used",
+                        "datasource": {"type": "prometheus", "uid": "prometheus"},
+                        "targets": [
+                          {
+                            "expr": "(1 - sum(node_memory_MemAvailable_bytes) / sum(node_memory_MemTotal_bytes)) * 100",
+                            "refId": "A"
+                          }
+                        ],
+                        "fieldConfig": {
+                          "defaults": {
+                            "unit": "percent",
+                            "min": 0,
+                            "max": 100,
+                            "thresholds": {
+                              "mode": "percentage",
+                              "steps": [
+                                {"color": "green", "value": null},
+                                {"color": "orange", "value": 70},
+                                {"color": "red", "value": 90}
+                              ]
+                            }
+                          },
+                          "overrides": []
+                        },
+                        "gridPos": {"h": 5, "w": 6, "x": 12, "y": 0}
+                      },
+                      {
+                        "id": 4,
+                        "type": "timeseries",
+                        "title": "Cluster CPU Burn",
+                        "datasource": {"type": "prometheus", "uid": "prometheus"},
+                        "targets": [
+                          {
+                            "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\", pod!=\"\"}[5m]))",
+                            "legendFormat": "CPU cores",
+                            "refId": "A"
+                          }
+                        ],
+                        "fieldConfig": {
+                          "defaults": {
+                            "unit": "none",
+                            "color": {"mode": "palette-classic"}
+                          },
+                          "overrides": []
+                        },
+                        "options": {
+                          "legend": {"displayMode": "table", "placement": "bottom"},
+                          "tooltip": {"mode": "multi", "sort": "desc"}
+                        },
+                        "gridPos": {"h": 7, "w": 12, "x": 0, "y": 5}
+                      },
+                      {
+                        "id": 5,
+                        "type": "table",
+                        "title": "Top namespaces by pods",
+                        "datasource": {"type": "prometheus", "uid": "prometheus"},
+                        "targets": [
+                          {
+                            "expr": "topk(5, sum by (namespace) (kube_pod_info))",
+                            "format": "table",
+                            "refId": "A"
+                          }
+                        ],
+                        "fieldConfig": {
+                          "defaults": {
+                            "custom": {
+                              "displayMode": "color-text"
+                            }
+                          },
+                          "overrides": []
+                        },
+                        "options": {
+                          "showHeader": true
+                        },
+                        "gridPos": {"h": 7, "w": 12, "x": 12, "y": 5}
+                      }
+                    ]
+                  }
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            annotations:
+              kubernetes.io/ingress.class: nginx
+              nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+            hosts:
+              - grafana.karamjitbrar.com
+            path: /
+            pathType: Prefix
+            tls:
+              - secretName: k8s-tls
+                hosts:
+                  - grafana.karamjitbrar.com
+          grafana.ini:
+            server:
+              root_url: https://grafana.karamjitbrar.com/
+            security:
+              allow_embedding: true
+            auth.anonymous:
+              enabled: true
+              org_role: Viewer
+            dashboards:
+              default_home_dashboard_path: /var/lib/grafana/dashboards/home/moment-home.json
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
