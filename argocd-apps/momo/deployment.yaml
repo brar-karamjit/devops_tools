@@ -64,6 +64,7 @@ metadata:
   name: momo-ingress
   namespace: momo 
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: nginx 

@@ -43,6 +43,8 @@ metadata:
   name: hello-ingress
   namespace: hello
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx
@@ -57,3 +59,7 @@ spec:
             name: hello-service
             port:
               number: 80
+  tls:
+  - secretName: k8s-tls
+    hosts:
+    - k8s.karamjitbrar.com

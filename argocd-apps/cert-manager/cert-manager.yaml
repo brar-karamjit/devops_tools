@@ -1,0 +1,30 @@
+# ArgoCD Application to install cert-manager via Helm chart.
+# Discovered automatically by the ApplicationSet.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: default
+  destination:
+    namespace: cert-manager
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://charts.jetstack.io
+    targetRevision: v1.17.1
+    chart: cert-manager
+    helm:
+      releaseName: cert-manager
+      values: |
+        crds:
+          enabled: true
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

@@ -83,7 +83,7 @@ data:
         <div class="card apps">
           <h2>Deployed Apps</h2>
           <ul class="app-list">
-            <li><a href="/momo">Moment in Motion</a></li>
+            <li><a href="https://momo.karamjitbrar.com">Moment in Motion</a></li>
             <li><a href="/argocd">ArgoCD</a></li>
             <li><a href="/grafana">Grafana</a></li>
           </ul>
@@ -149,6 +149,7 @@ metadata:
   name: home-ingress
   namespace: home
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: nginx
