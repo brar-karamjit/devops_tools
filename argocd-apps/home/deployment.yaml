@@ -153,6 +153,8 @@ metadata:
   namespace: home
   annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^/home(/|$)(.*) /$2 break;
 spec:
   ingressClassName: nginx
   rules:
