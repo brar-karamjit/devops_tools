@@ -31,6 +31,10 @@ data:
         .app-list{list-style:none;display:flex;flex-wrap:wrap;gap:.6rem}
         .app-list a{display:inline-block;padding:.45rem 1rem;background:#334155;border-radius:8px;color:#e2e8f0;text-decoration:none;font-size:.9rem;transition:background .2s}
         .app-list a:hover{background:#475569}
+        .app-group{margin-top:.9rem;padding:1rem;border:1px dashed #334155;border-radius:12px;background:#111827}
+        .app-group:first-of-type{margin-top:0}
+        .section-title{font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+        .section-title .icon{font-size:1rem}
         .list{list-style:none;display:grid;gap:.6rem}
         .list li{background:#0f172a;border:1px solid #1f2937;border-radius:10px;padding:.75rem .9rem;color:#cbd5e1}
         .list strong{color:#e2e8f0}
@@ -107,13 +111,22 @@ data:
 
         <div class="card apps">
           <h2>Deployed Apps</h2>
-          <ul class="app-list">
-            <li><a href="https://momo.karamjitbrar.com">Moment in Motion</a></li>
-            <li><a href="https://argocd.karamjitbrar.com">ArgoCD</a></li>
-            <li><a href="https://grafana.karamjitbrar.com">Grafana</a></li>
-            <li><a href="https://kiali.karamjitbrar.com">Kiali</a></li>
-            <li><a href="https://headlamp.karamjitbrar.com">Headlamp</a></li>
-          </ul>
+          <div class="app-group">
+            <div class="section-title"><span class="icon">🎯</span>Product Apps</div>
+            <ul class="app-list">
+              <li><a href="https://momo.karamjitbrar.com">Moment in Motion</a></li>
+            </ul>
+          </div>
+
+          <div class="app-group">
+            <div class="section-title"><span class="icon">🧰</span>Cluster Tools</div>
+            <ul class="app-list">
+              <li><a href="https://argocd.karamjitbrar.com">ArgoCD</a></li>
+              <li><a href="https://grafana.karamjitbrar.com">Grafana</a></li>
+              <li><a href="https://kiali.karamjitbrar.com">Kiali</a></li>
+              <li><a href="https://headlamp.karamjitbrar.com">Headlamp</a></li>
+            </ul>
+          </div>
           <div class="meta">
             <div class="pills">
               <span class="pill">GitOps</span>
