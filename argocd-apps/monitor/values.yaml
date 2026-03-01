@@ -1,5 +1,9 @@
 kube-prometheus-stack:
   fullnameOverride: monitor-kube-prometheus
+  crds:
+    enabled: true
+    annotations:
+      argocd.argoproj.io/sync-options: Replace=true
   grafana:
     dashboardProviders:
       dashboardproviders.yaml:
