@@ -49,10 +49,10 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: k8s.karamjitbrar.com
+  - host: hello.karamjitbrar.com
     http:
       paths:
-      - path: /hello
+      - path: /
         pathType: Prefix
         backend:
           service:
@@ -62,4 +62,4 @@ spec:
   tls:
   - secretName: k8s-tls
     hosts:
-    - k8s.karamjitbrar.com
+    - hello.karamjitbrar.com
