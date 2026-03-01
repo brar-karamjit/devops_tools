@@ -1,6 +1,6 @@
 # kube-prometheus-stack (monitor)
 
-This folder contains the [`kube-prometheus-stack`](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) deployment managed as a standalone Argo CD `Application`. It powers the public Grafana instance at `https://k8s.karamjitbrar.com` with Prometheus, Alertmanager, and Grafana — all deployed into the `monitor` namespace.
+This folder contains the [`kube-prometheus-stack`](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) deployment managed as a standalone Argo CD `Application`. It powers the public Grafana instance at `https://grafana.karamjitbrar.com` with Prometheus, Alertmanager, and Grafana — all deployed into the `monitor` namespace.
 
 ## How it works
 
@@ -82,5 +82,5 @@ kubectl get application kube-prometheus-stack -n argocd
 kubectl get pods -n monitor
 
 # Browse Grafana
-open https://k8s.karamjitbrar.com
+open https://grafana.karamjitbrar.com
 ```
