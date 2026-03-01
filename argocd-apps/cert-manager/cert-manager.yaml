@@ -1,26 +1,31 @@
-# ArgoCD Application to install cert-manager via Helm chart.
-# Discovered automatically by the ApplicationSet.
+# ArgoCD Application to install cert-manager via Helm chart
+# and apply additional manifests (ClusterIssuer).
+# Excluded from the ApplicationSet – apply directly:
+#   kubectl apply -f argocd-apps/cert-manager/cert-manager.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: cert-manager
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "-1"
 spec:
   project: default
   destination:
     namespace: cert-manager
     server: https://kubernetes.default.svc
-  source:
-    repoURL: https://charts.jetstack.io
-    targetRevision: v1.17.1
-    chart: cert-manager
-    helm:
-      releaseName: cert-manager
-      values: |
-        crds:
-          enabled: true
+  sources:
+    # 1. Helm chart – installs cert-manager + CRDs
+    - repoURL: https://charts.jetstack.io
+      targetRevision: v1.17.1
+      chart: cert-manager
+      helm:
+        releaseName: cert-manager
+        values: |
+          crds:
+            enabled: true
+    # 2. Extra manifests (ClusterIssuer, etc.)
+    - repoURL: https://github.com/brar-karamjit/devops_tools
+      targetRevision: HEAD
+      path: argocd-apps/cert-manager/manifests
   syncPolicy:
     automated:
       prune: true
