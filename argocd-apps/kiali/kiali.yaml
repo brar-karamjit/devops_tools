@@ -47,6 +47,8 @@ data:
     external_services:
       istio:
         root_namespace: istio-system
+      prometheus:
+        url: http://home-kube-prometheus-prometheus.monitor:9090
     server:
       web_root: /
       signing_key: change-me-16-bytes
