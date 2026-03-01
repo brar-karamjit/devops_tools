@@ -1,37 +1,45 @@
-# configurations for ArgoCD used in Helm chart deployment
+# Recommended Refinements for OCI ARM + NGINX
+global:
+  # Ensures Argo components pull the correct arm64 images and land on your ARM nodes
+  nodeSelector:
+    kubernetes.io/arch: arm64
 
 server:
   service:
     type: ClusterIP
 
-  # 2. Configure the Ingress resource
   ingress:
     enabled: true
     ingressClassName: nginx 
     hostname: argocd.karamjitbrar.com
     path: /
     pathType: Prefix
-    
     annotations:
-      # Crucial for NGINX to handle the gRPC traffic for the ArgoCD CLI
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-      # Forces all HTTP traffic to be redirected to HTTPS (Highly Recommended)
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      # Let cert-manager issue a TLS certificate via Let's Encrypt
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
-      
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     tls:
       - hosts:
           - argocd.karamjitbrar.com
         secretName: argocd-tls
 
+  # Essential: If NGINX is doing the TLS termination (which it is via cert-manager),
+  # the Argo server itself needs to run in insecure mode to avoid a redirect loop.
+  extraArgs:
+    - --insecure
+
 configs:
   cm:
     admin.enabled: true
     timeout.reconciliation: 15s
-    timeout.hard.reconciliation: 0s
     url: https://argocd.karamjitbrar.com
   
   params:
-    server.rootpath: /
-    
+    server.insecure: true # Matches the extraArgs above
+
+# Explicitly ensure ApplicationSet controller is enabled (it is by default in newer charts, 
+# but good to have in the file for ARM node affinity)
+applicationSet:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/arch: arm64
