@@ -8,8 +8,8 @@ server:
   ingress:
     enabled: true
     ingressClassName: nginx 
-    hostname: k8s.karamjitbrar.com 
-    path: /argocd
+    hostname: argocd.karamjitbrar.com
+    path: /
     pathType: Prefix
     
     annotations:
@@ -17,19 +17,21 @@ server:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       # Forces all HTTP traffic to be redirected to HTTPS (Highly Recommended)
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      # Let cert-manager issue a TLS certificate via Let's Encrypt
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
       
     tls:
       - hosts:
-          - k8s.karamjitbrar.com
-        secretName: k8s-tls  # the signed secret
+          - argocd.karamjitbrar.com
+        secretName: argocd-tls
 
 configs:
   cm:
     admin.enabled: true
     timeout.reconciliation: 15s
     timeout.hard.reconciliation: 0s
+    url: https://argocd.karamjitbrar.com
   
-  # 3. **Set the root path for the ArgoCD server application itself**
   params:
-    server.rootpath: /argocd
+    server.rootpath: /
     
