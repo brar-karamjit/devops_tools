@@ -122,7 +122,7 @@ spec:
         - containerPort: 80
         volumeMounts:
           - name: html
-            mountPath: /usr/share/nginx/html/home
+            mountPath: /usr/share/nginx/html
             readOnly: true
       volumes:
       - name: html
@@ -153,15 +153,13 @@ metadata:
   namespace: home
   annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      rewrite ^/home(/|$)(.*) /$2 break;
 spec:
   ingressClassName: nginx
   rules:
   - host: k8s.karamjitbrar.com
     http:
       paths:
-      - path: /home
+      - path: /
         pathType: Prefix
         backend:
           service:
