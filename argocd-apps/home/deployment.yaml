@@ -128,9 +128,9 @@ spec:
       - name: html
         configMap:
           name: home-page
-            items:
-            - key: home-index.html
-              path: index.html
+          items:
+          - key: home-index.html
+            path: index.html
 ---
 apiVersion: v1
 kind: Service
