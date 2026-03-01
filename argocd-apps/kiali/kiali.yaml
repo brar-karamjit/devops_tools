@@ -1,0 +1,140 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kiali
+  namespace: kiali
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kiali
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["authentication.k8s.io"]
+    resources: ["tokenreviews"]
+    verbs: ["create"]
+  - apiGroups: ["authorization.k8s.io"]
+    resources: ["subjectaccessreviews"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kiali
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kiali
+subjects:
+  - kind: ServiceAccount
+    name: kiali
+    namespace: kiali
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kiali
+  namespace: kiali
+data:
+  config.yaml: |
+    auth:
+      strategy: anonymous
+    deployment:
+      accessible_namespaces:
+        - "**"
+    external_services:
+      istio:
+        root_namespace: istio-system
+    server:
+      web_root: /
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kiali
+  namespace: kiali
+  labels:
+    app: kiali
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kiali
+  template:
+    metadata:
+      labels:
+        app: kiali
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: kiali
+      containers:
+        - name: kiali
+          image: quay.io/kiali/kiali:v1.76
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 20001
+          env:
+            - name: ACTIVE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: LOG_LEVEL
+              value: info
+            - name: LOG_FORMAT
+              value: text
+            - name: KIALI_CONFIG_PATH
+              value: /kiali-configuration/config.yaml
+          volumeMounts:
+            - name: kiali-configuration
+              mountPath: /kiali-configuration
+      volumes:
+        - name: kiali-configuration
+          configMap:
+            name: kiali
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kiali
+  namespace: kiali
+spec:
+  selector:
+    app: kiali
+  ports:
+    - name: http
+      port: 20001
+      targetPort: 20001
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kiali-ingress
+  namespace: kiali
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: kiali-basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - Kiali'
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: kiali.karamjitbrar.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kiali
+                port:
+                  number: 20001
+  tls:
+    - secretName: kiali-tls
+      hosts:
+        - kiali.karamjitbrar.com

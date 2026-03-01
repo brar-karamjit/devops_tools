@@ -50,3 +50,11 @@ kubectl rollout restart deploy -n momo
 ## Optional hardening
 
 When ready, switch `PeerAuthentication` to `STRICT` per namespace. You may also add `DestinationRule` resources for service-level mTLS enforcement.
+
+## Kiali UI
+
+Kiali is deployed via `argocd-apps/kiali/kiali.yaml` and exposed through the existing NGINX ingress at `kiali.karamjitbrar.com`. We keep the ingress path simple (direct to the Kiali service) and avoid an Istio Gateway for the same reason as the apps: NGINX already handles edge traffic via hostPort.
+
+Kiali authentication is set to `anonymous` in this setup. If you want authenticated access, switch to a supported strategy (for example, OpenID) and add the required secrets.
+
+We also enable NGINX basic auth at the ingress layer. This is the easiest way to add login protection without changing Kiali's internal auth strategy. The ingress expects a secret named `kiali-basic-auth` in the `kiali` namespace.
