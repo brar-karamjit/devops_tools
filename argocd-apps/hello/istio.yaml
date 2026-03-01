@@ -12,4 +12,15 @@ metadata:
   namespace: hello
 spec:
   mtls:
-    mode: PERMISSIVE
+    mode: STRICT
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: hello-service-mtls
+  namespace: hello
+spec:
+  host: hello-service.hello.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
