@@ -49,6 +49,7 @@ data:
         root_namespace: istio-system
     server:
       web_root: /
+      signing_key: change-me-16-bytes
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -74,6 +75,8 @@ spec:
         - name: kiali
           image: quay.io/kiali/kiali:v1.76
           imagePullPolicy: IfNotPresent
+          args:
+            - --config=/kiali-configuration/config.yaml
           ports:
             - name: http
               containerPort: 20001
