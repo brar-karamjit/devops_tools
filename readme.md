@@ -22,6 +22,19 @@ Each subfolder in `argocd-apps/` is a separate app. The ApplicationSet auto-disc
 
 **Prerequisites:** Kubernetes cluster, `kubectl`, Helm.
 
+### Ingress Controller (Optional, k3s)
+
+Disable Traefik, restart k3s, then install ingress-nginx:
+```bash
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+	--namespace ingress-nginx \
+	--create-namespace
+```
+
+### ArgoCD
+
 1. **Install ArgoCD:**
 	```bash
 	helm repo add argo https://argoproj.github.io/argo-helm
