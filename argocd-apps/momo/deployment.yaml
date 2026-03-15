@@ -24,6 +24,9 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8000 
+        volumeMounts:
+        - name: momo-sqlite
+          mountPath: /data
         env:
         - name: HELLO_SERVICE_URL
           value: "http://hello-service.hello"
@@ -41,6 +44,11 @@ spec:
           value: "False"
         - name: DJANGO_ALLOWED_HOSTS
           value: "momo.karamjitbrar.com"
+      volumes:
+      - name: momo-sqlite
+        hostPath:
+          path: /var/lib/momo
+          type: DirectoryOrCreate
 ---
 apiVersion: v1
 kind: Service
