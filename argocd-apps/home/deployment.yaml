@@ -26,6 +26,7 @@ data:
         .nav{display:flex;gap:.55rem;flex-wrap:wrap}
         .nav a{display:inline-block;padding:.42rem .86rem;border-radius:999px;border:1px solid #334155;background:#111827;color:#cbd5e1;text-decoration:none;font-size:.82rem;transition:all .2s}
         .nav a:hover{border-color:#38bdf8;color:#f8fafc;background:#1e293b}
+        .nav a .ico{opacity:.9;margin-right:.28rem}
         .hero{margin-top:1rem;padding:1.35rem;border:1px solid #263244;border-radius:14px;background:linear-gradient(135deg,rgba(56,189,248,.12),rgba(99,102,241,.10))}
         .hero h2{font-size:2rem;line-height:1.1;margin-bottom:.55rem;background:linear-gradient(135deg,#7dd3fc,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .hero p{color:#cbd5e1;max-width:760px}
@@ -36,7 +37,12 @@ data:
         .span-7{grid-column:span 7}
         .span-5{grid-column:span 5}
         .span-12{grid-column:span 12}
-        .title{font-size:.84rem;letter-spacing:.08em;text-transform:uppercase;color:#93c5fd;margin-bottom:.75rem}
+        .title{font-size:.84rem;letter-spacing:.08em;text-transform:uppercase;color:#93c5fd;margin-bottom:.75rem;display:flex;align-items:center;gap:.45rem}
+        .title .ico{font-size:.95rem;opacity:.95}
+        .card-dna{background:linear-gradient(180deg,rgba(30,58,138,.18),rgba(17,24,39,1) 30%)}
+        .card-journey{background:linear-gradient(180deg,rgba(6,78,59,.16),rgba(17,24,39,1) 30%)}
+        .card-workloads{background:linear-gradient(180deg,rgba(76,29,149,.16),rgba(17,24,39,1) 30%)}
+        .card-principles{background:linear-gradient(180deg,rgba(124,45,18,.16),rgba(17,24,39,1) 30%)}
         .kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem .8rem}
         .kv div{padding:.55rem .6rem;border:1px solid #1f2937;border-radius:10px;background:#0b1220}
         .k{font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:#64748b}
@@ -46,12 +52,17 @@ data:
         .num{width:22px;height:22px;border-radius:999px;background:#1e3a8a;color:#bfdbfe;display:grid;place-items:center;font-size:.75rem;font-weight:700}
         .app-columns{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
         .group{border:1px solid #1f2937;border-radius:10px;background:#0b1220;padding:.75rem}
-        .group h3{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;margin-bottom:.55rem}
+        .group h3{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;margin-bottom:.55rem;display:flex;align-items:center;gap:.4rem}
         .links{list-style:none;display:flex;gap:.5rem;flex-wrap:wrap}
-        .links a{display:inline-block;padding:.38rem .72rem;border-radius:8px;background:#1f2937;color:#dbeafe;text-decoration:none;font-size:.84rem}
+        .links a{display:inline-block;padding:.38rem .72rem;border-radius:8px;background:#1f2937;color:#dbeafe;text-decoration:none;font-size:.84rem;border:1px solid transparent}
         .links a:hover{background:#334155}
         .ops{list-style:none;display:grid;gap:.45rem}
         .ops li{padding:.56rem .64rem;border-radius:9px;background:#0b1220;border:1px solid #1f2937;color:#cbd5e1}
+        .ops li::before{content:'✓';color:#22c55e;font-weight:700;margin-right:.45rem}
+        .group.tools .links a{background:#1f2937;border-color:#334155}
+        .group.tools .links a:hover{border-color:#38bdf8}
+        .group.product .links a{background:#1f2937;border-color:#374151}
+        .group.product .links a:hover{border-color:#a78bfa}
         .footer{margin-top:1rem;text-align:center;color:#64748b;font-size:.78rem}
         @media(max-width:900px){.span-7,.span-5{grid-column:span 12}}
         @media(max-width:620px){.hero h2{font-size:1.55rem}.app-columns,.kv{grid-template-columns:1fr}}
@@ -68,9 +79,9 @@ data:
             </div>
           </div>
           <nav class="nav">
-            <a href="https://github.com/brar-karamjit/devops_tools" target="_blank" rel="noopener">DevOps Repo</a>
-            <a href="https://karamjitbrar.com" target="_blank" rel="noopener">Portfolio</a>
-            <a href="https://k8s.karamjitbrar.com" target="_blank" rel="noopener">Home</a>
+            <a href="https://github.com/brar-karamjit/devops_tools" target="_blank" rel="noopener"><span class="ico">🧱</span>DevOps Repo</a>
+            <a href="https://karamjitbrar.com" target="_blank" rel="noopener"><span class="ico">👨‍💻</span>Portfolio</a>
+            <a href="https://k8s.karamjitbrar.com" target="_blank" rel="noopener"><span class="ico">🏠</span>Home</a>
           </nav>
         </header>
 
@@ -87,8 +98,8 @@ data:
         </section>
 
         <section class="grid">
-          <article class="card span-7">
-            <div class="title">Cluster DNA</div>
+          <article class="card card-dna span-7">
+            <div class="title"><span class="ico">🧬</span>Cluster DNA</div>
             <div class="kv">
               <div><div class="k">Platform</div><div class="v">Oracle Cloud (OCI) ARM</div></div>
               <div><div class="k">Architecture</div><div class="v">aarch64 / arm64</div></div>
@@ -103,8 +114,8 @@ data:
             </div>
           </article>
 
-          <article class="card span-5">
-            <div class="title">Traffic Journey</div>
+          <article class="card card-journey span-5">
+            <div class="title"><span class="ico">🌐</span>Traffic Journey</div>
             <ol class="flow">
               <li><span class="num">1</span>DNS points traffic to the ingress endpoint.</li>
               <li><span class="num">2</span>NGINX terminates TLS and routes by host/path.</li>
@@ -114,17 +125,17 @@ data:
             </ol>
           </article>
 
-          <article class="card span-12">
-            <div class="title">Workloads & Tooling</div>
+          <article class="card card-workloads span-12">
+            <div class="title"><span class="ico">🧰</span>Workloads & Tooling</div>
             <div class="app-columns">
-              <section class="group">
-                <h3>Product Apps</h3>
+              <section class="group product">
+                <h3><span>🎯</span>Product Apps</h3>
                 <ul class="links">
                   <li><a href="https://momo.karamjitbrar.com" target="_blank" rel="noopener">Moment in Motion</a></li>
                 </ul>
               </section>
-              <section class="group">
-                <h3>Cluster Tools</h3>
+              <section class="group tools">
+                <h3><span>🔧</span>Cluster Tools</h3>
                 <ul class="links">
                   <li><a href="https://argocd.karamjitbrar.com" target="_blank" rel="noopener">ArgoCD</a></li>
                   <li><a href="https://grafana.karamjitbrar.com" target="_blank" rel="noopener">Grafana</a></li>
@@ -135,8 +146,8 @@ data:
             </div>
           </article>
 
-          <article class="card span-12">
-            <div class="title">Operating Principles</div>
+          <article class="card card-principles span-12">
+            <div class="title"><span class="ico">📌</span>Operating Principles</div>
             <ul class="ops">
               <li>Git is the source of truth; manual cluster edits are temporary.</li>
               <li>Each app is declarative and continuously reconciled.</li>
