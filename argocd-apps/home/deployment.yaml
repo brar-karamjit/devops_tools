@@ -18,6 +18,9 @@ data:
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center}
         .container{max-width:720px;width:90%;text-align:center;padding:3rem 2rem}
+        .top-nav{display:flex;justify-content:center;gap:.6rem;flex-wrap:wrap;margin-bottom:1.2rem}
+        .top-nav a{display:inline-block;padding:.42rem .85rem;background:#0b1220;border:1px solid #1f2a37;border-radius:999px;color:#cbd5e1;text-decoration:none;font-size:.82rem;transition:background .2s,border-color .2s}
+        .top-nav a:hover{background:#111827;border-color:#334155}
         h1{font-size:2.4rem;font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .subtitle{color:#94a3b8;font-size:1.1rem;margin-bottom:2.5rem}
         .card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.8rem;margin-bottom:1.5rem;text-align:left}
@@ -55,6 +58,11 @@ data:
     </head>
     <body>
       <div class="container">
+        <div class="top-nav">
+          <a href="https://github.com/brar-karamjit/devops_tools" target="_blank" rel="noopener">DevOps Repo</a>
+          <a href="https://karamjitbrar.com" target="_blank" rel="noopener">Portfolio</a>
+          <a href="https://k8s.karamjitbrar.com" target="_blank" rel="noopener">K8s Home</a>
+        </div>
         <h1>Welcome to the K8s Lab</h1>
         <p class="subtitle">A personal Kubernetes playground by Karamjit Brar</p>
 
