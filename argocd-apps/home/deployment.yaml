@@ -16,149 +16,138 @@ data:
       <title>K8s Lab — Karamjit Brar</title>
       <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center}
-        .container{max-width:720px;width:90%;text-align:center;padding:3rem 2rem}
-        .top-nav{display:flex;justify-content:center;gap:.6rem;flex-wrap:wrap;margin-bottom:1.2rem}
-        .top-nav a{display:inline-block;padding:.42rem .85rem;background:#0b1220;border:1px solid #1f2a37;border-radius:999px;color:#cbd5e1;text-decoration:none;font-size:.82rem;transition:background .2s,border-color .2s}
-        .top-nav a:hover{background:#111827;border-color:#334155}
-        h1{font-size:2.4rem;font-weight:700;margin-bottom:.5rem;background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .subtitle{color:#94a3b8;font-size:1.1rem;margin-bottom:2.5rem}
-        .card{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:1.8rem;margin-bottom:1.5rem;text-align:left}
-        .card h2{font-size:1.1rem;color:#38bdf8;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
-        .card h2::before{content:'⎈';font-size:1.3rem}
-        .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem .8rem}
-        .info-item{display:flex;flex-direction:column}
-        .info-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:#64748b}
-        .info-value{font-size:.95rem;color:#cbd5e1}
-        .apps{margin-top:1.5rem}
-        .apps h2::before{content:'📦'}
-        .app-list{list-style:none;display:flex;flex-wrap:wrap;gap:.6rem}
-        .app-list a{display:inline-block;padding:.45rem 1rem;background:#334155;border-radius:8px;color:#e2e8f0;text-decoration:none;font-size:.9rem;transition:background .2s}
-        .app-list a:hover{background:#475569}
-        .app-group{margin-top:.9rem;padding:1rem;border:1px dashed #334155;border-radius:12px;background:#111827}
-        .app-group:first-of-type{margin-top:0}
-        .section-title{font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:#94a3b8;margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
-        .section-title .icon{font-size:1rem}
-        .list{list-style:none;display:grid;gap:.6rem}
-        .list li{background:#0f172a;border:1px solid #1f2937;border-radius:10px;padding:.75rem .9rem;color:#cbd5e1}
-        .list strong{color:#e2e8f0}
-        .code-card{padding:1.1rem 1.2rem}
-        .code-card h2{font-size:.95rem}
-        .codebox{background:#0b1220;border:1px solid #1f2a37;border-radius:10px;padding:.9rem;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:.82rem;line-height:1.5;color:#cbd5e1}
-        .codebox li{background:transparent;border:none;padding:0;color:#cbd5e1}
-        .codebox li strong{color:#93c5fd;font-weight:600}
-        .meta{margin-top:1rem;font-size:.85rem;color:#64748b}
-        .pill{display:inline-block;padding:.2rem .6rem;border-radius:999px;background:#0b3a56;color:#7dd3fc;font-size:.75rem;border:1px solid #0f4c6a}
-        .pills{display:flex;flex-wrap:wrap;gap:.4rem}
-        .footer{margin-top:2.5rem;color:#475569;font-size:.8rem}
-        .footer a{color:#64748b;text-decoration:none}
-        .footer a:hover{color:#94a3b8}
-        @media(max-width:480px){h1{font-size:1.8rem}.info-grid{grid-template-columns:1fr}}
+        body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:radial-gradient(1200px 800px at 20% -10%,#1e293b 0,#0f172a 55%),#0f172a;color:#e2e8f0;min-height:100vh}
+        .wrap{max-width:1050px;margin:0 auto;padding:1.2rem 1.1rem 2.2rem}
+        .header{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:.8rem 1rem;border:1px solid #263244;border-radius:12px;background:rgba(12,18,32,.72);backdrop-filter:blur(4px)}
+        .brand{display:flex;align-items:center;gap:.7rem}
+        .logo{width:34px;height:34px;border-radius:9px;background:#0b1220;border:1px solid #334155;display:grid;place-items:center;font-size:1rem;color:#38bdf8}
+        .brand h1{font-size:1.02rem;font-weight:700;letter-spacing:.02em}
+        .brand p{font-size:.78rem;color:#94a3b8}
+        .nav{display:flex;gap:.55rem;flex-wrap:wrap}
+        .nav a{display:inline-block;padding:.42rem .86rem;border-radius:999px;border:1px solid #334155;background:#111827;color:#cbd5e1;text-decoration:none;font-size:.82rem;transition:all .2s}
+        .nav a:hover{border-color:#38bdf8;color:#f8fafc;background:#1e293b}
+        .hero{margin-top:1rem;padding:1.35rem;border:1px solid #263244;border-radius:14px;background:linear-gradient(135deg,rgba(56,189,248,.12),rgba(99,102,241,.10))}
+        .hero h2{font-size:2rem;line-height:1.1;margin-bottom:.55rem;background:linear-gradient(135deg,#7dd3fc,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .hero p{color:#cbd5e1;max-width:760px}
+        .chips{margin-top:.9rem;display:flex;gap:.5rem;flex-wrap:wrap}
+        .chip{padding:.24rem .58rem;border-radius:999px;background:#0b3a56;border:1px solid #0f4c6a;color:#7dd3fc;font-size:.76rem}
+        .grid{margin-top:1rem;display:grid;gap:.85rem;grid-template-columns:repeat(12,1fr)}
+        .card{border:1px solid #263244;border-radius:14px;background:#111827;padding:1rem}
+        .span-7{grid-column:span 7}
+        .span-5{grid-column:span 5}
+        .span-12{grid-column:span 12}
+        .title{font-size:.84rem;letter-spacing:.08em;text-transform:uppercase;color:#93c5fd;margin-bottom:.75rem}
+        .kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem .8rem}
+        .kv div{padding:.55rem .6rem;border:1px solid #1f2937;border-radius:10px;background:#0b1220}
+        .k{font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:#64748b}
+        .v{margin-top:.2rem;color:#dbeafe;font-size:.92rem}
+        .flow{list-style:none;display:grid;gap:.55rem}
+        .flow li{display:flex;align-items:center;gap:.55rem;padding:.62rem .7rem;border:1px dashed #334155;border-radius:10px;background:#0b1220;color:#cbd5e1}
+        .num{width:22px;height:22px;border-radius:999px;background:#1e3a8a;color:#bfdbfe;display:grid;place-items:center;font-size:.75rem;font-weight:700}
+        .app-columns{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+        .group{border:1px solid #1f2937;border-radius:10px;background:#0b1220;padding:.75rem}
+        .group h3{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:#94a3b8;margin-bottom:.55rem}
+        .links{list-style:none;display:flex;gap:.5rem;flex-wrap:wrap}
+        .links a{display:inline-block;padding:.38rem .72rem;border-radius:8px;background:#1f2937;color:#dbeafe;text-decoration:none;font-size:.84rem}
+        .links a:hover{background:#334155}
+        .ops{list-style:none;display:grid;gap:.45rem}
+        .ops li{padding:.56rem .64rem;border-radius:9px;background:#0b1220;border:1px solid #1f2937;color:#cbd5e1}
+        .footer{margin-top:1rem;text-align:center;color:#64748b;font-size:.78rem}
+        @media(max-width:900px){.span-7,.span-5{grid-column:span 12}}
+        @media(max-width:620px){.hero h2{font-size:1.55rem}.app-columns,.kv{grid-template-columns:1fr}}
       </style>
     </head>
     <body>
-      <div class="container">
-        <div class="top-nav">
-          <a href="https://github.com/brar-karamjit/devops_tools" target="_blank" rel="noopener">DevOps Repo</a>
-          <a href="https://karamjitbrar.com" target="_blank" rel="noopener">Portfolio</a>
-          <a href="https://k8s.karamjitbrar.com" target="_blank" rel="noopener">K8s Home</a>
-        </div>
-        <h1>Welcome to the K8s Lab</h1>
-        <p class="subtitle">A personal Kubernetes playground by Karamjit Brar</p>
-
-        <div class="card">
-          <h2>Cluster Overview</h2>
-          <div class="info-grid">
-            <div class="info-item">
-              <span class="info-label">Platform</span>
-              <span class="info-value">Oracle Cloud (OCI) — ARM</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Architecture</span>
-              <span class="info-value">aarch64 (arm64)</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Host OS</span>
-              <span class="info-value">Oracle Linux 9.6</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Kernel</span>
-              <span class="info-value">6.12.0 UEK</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Ingress</span>
-              <span class="info-value">NGINX Ingress Controller</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Service Mesh</span>
-              <span class="info-value">Istio + Kiali</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">GitOps</span>
-              <span class="info-value">ArgoCD + ApplicationSets</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">CI / CD</span>
-              <span class="info-value">GitHub Actions → GHCR</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">TLS</span>
-              <span class="info-value">Let's Encrypt / cert-manager</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Observability</span>
-              <span class="info-value">Prometheus + Grafana</span>
+      <main class="wrap">
+        <header class="header">
+          <div class="brand">
+            <div class="logo">⎈</div>
+            <div>
+              <h1>K8s Reflection Board</h1>
+              <p>k8s.karamjitbrar.com · personal cloud-native lab</p>
             </div>
           </div>
-        </div>
+          <nav class="nav">
+            <a href="https://github.com/brar-karamjit/devops_tools" target="_blank" rel="noopener">DevOps Repo</a>
+            <a href="https://karamjitbrar.com" target="_blank" rel="noopener">Portfolio</a>
+            <a href="https://k8s.karamjitbrar.com" target="_blank" rel="noopener">Home</a>
+          </nav>
+        </header>
 
-        <div class="card apps">
-          <h2>Deployed Apps</h2>
-          <div class="app-group">
-            <div class="section-title"><span class="icon">🎯</span>Product Apps</div>
-            <ul class="app-list">
-              <li><a href="https://momo.karamjitbrar.com">Moment in Motion</a></li>
+        <section class="hero">
+          <h2>From Git Commit to Live Traffic</h2>
+          <p>This cluster is built to show production-like platform habits on a personal stack: GitOps first, mesh-aware traffic, secure ingress, and observable workloads.</p>
+          <div class="chips">
+            <span class="chip">OCI ARM</span>
+            <span class="chip">ArgoCD</span>
+            <span class="chip">Istio + Kiali</span>
+            <span class="chip">Prometheus + Grafana</span>
+            <span class="chip">cert-manager</span>
+          </div>
+        </section>
+
+        <section class="grid">
+          <article class="card span-7">
+            <div class="title">Cluster DNA</div>
+            <div class="kv">
+              <div><div class="k">Platform</div><div class="v">Oracle Cloud (OCI) ARM</div></div>
+              <div><div class="k">Architecture</div><div class="v">aarch64 / arm64</div></div>
+              <div><div class="k">Host OS</div><div class="v">Oracle Linux 9.6</div></div>
+              <div><div class="k">Kernel</div><div class="v">6.12.0 UEK</div></div>
+              <div><div class="k">Ingress Layer</div><div class="v">NGINX Ingress Controller</div></div>
+              <div><div class="k">Service Mesh</div><div class="v">Istio + Kiali</div></div>
+              <div><div class="k">Delivery Model</div><div class="v">ArgoCD + ApplicationSets</div></div>
+              <div><div class="k">Image Flow</div><div class="v">GitHub Actions → GHCR</div></div>
+              <div><div class="k">TLS</div><div class="v">Let's Encrypt via cert-manager</div></div>
+              <div><div class="k">Observability</div><div class="v">Prometheus + Grafana</div></div>
+            </div>
+          </article>
+
+          <article class="card span-5">
+            <div class="title">Traffic Journey</div>
+            <ol class="flow">
+              <li><span class="num">1</span>DNS points traffic to the ingress endpoint.</li>
+              <li><span class="num">2</span>NGINX terminates TLS and routes by host/path.</li>
+              <li><span class="num">3</span>Istio policies shape service-to-service flow.</li>
+              <li><span class="num">4</span>App metrics are scraped and visualized.</li>
+              <li><span class="num">5</span>ArgoCD continuously reconciles drift to Git.</li>
+            </ol>
+          </article>
+
+          <article class="card span-12">
+            <div class="title">Workloads & Tooling</div>
+            <div class="app-columns">
+              <section class="group">
+                <h3>Product Apps</h3>
+                <ul class="links">
+                  <li><a href="https://momo.karamjitbrar.com" target="_blank" rel="noopener">Moment in Motion</a></li>
+                </ul>
+              </section>
+              <section class="group">
+                <h3>Cluster Tools</h3>
+                <ul class="links">
+                  <li><a href="https://argocd.karamjitbrar.com" target="_blank" rel="noopener">ArgoCD</a></li>
+                  <li><a href="https://grafana.karamjitbrar.com" target="_blank" rel="noopener">Grafana</a></li>
+                  <li><a href="https://kiali.karamjitbrar.com" target="_blank" rel="noopener">Kiali</a></li>
+                  <li><a href="https://headlamp.karamjitbrar.com" target="_blank" rel="noopener">Headlamp</a></li>
+                </ul>
+              </section>
+            </div>
+          </article>
+
+          <article class="card span-12">
+            <div class="title">Operating Principles</div>
+            <ul class="ops">
+              <li>Git is the source of truth; manual cluster edits are temporary.</li>
+              <li>Each app is declarative and continuously reconciled.</li>
+              <li>Ingress + certificates are automated for secure defaults.</li>
+              <li>Observability is built in, not added later.</li>
             </ul>
-          </div>
+          </article>
+        </section>
 
-          <div class="app-group">
-            <div class="section-title"><span class="icon">🧰</span>Cluster Tools</div>
-            <ul class="app-list">
-              <li><a href="https://argocd.karamjitbrar.com">ArgoCD</a></li>
-              <li><a href="https://grafana.karamjitbrar.com">Grafana</a></li>
-              <li><a href="https://kiali.karamjitbrar.com">Kiali</a></li>
-              <li><a href="https://headlamp.karamjitbrar.com">Headlamp</a></li>
-            </ul>
-          </div>
-          <div class="meta">
-            <div class="pills">
-              <span class="pill">GitOps</span>
-              <span class="pill">Service Mesh</span>
-              <span class="pill">Observability</span>
-              <span class="pill">Ingress + TLS</span>
-            </div>
-          </div>
-        </div>
-
-        <p class="footer">
-          <a href="https://github.com/brar-karamjit" target="_blank" rel="noopener">GitHub</a>
-          &nbsp;·&nbsp;
-          <a href="https://karamjitbrar.com" target="_blank" rel="noopener">Portfolio</a>
-          &nbsp;·&nbsp;
-          <a href="https://github.com/brar-karamjit/devops_tools" target="_blank" rel="noopener">Infra Repo</a>
-        </p>
-
-        <div class="card code-card">
-          <h2>How This Lab Works</h2>
-          <ul class="list codebox">
-            <li><strong>git</strong> is source of truth; ArgoCD applies manifests.</li>
-            <li><strong>apps</strong> are synced via ApplicationSets.</li>
-            <li><strong>https</strong> enforced at ingress with cert-manager.</li>
-            <li><strong>metrics</strong> flow to Prometheus; Grafana dashboards.</li>
-          </ul>
-          <div class="meta">Want details? See the repo and manifests linked above.</div>
-        </div>
-      </div>
+        <p class="footer">Built and operated by Karamjit Brar · Cloud-native learning in public</p>
+      </main>
     </body>
     </html>
 ---
