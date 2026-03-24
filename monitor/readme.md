@@ -11,7 +11,7 @@ Prometheus stack is managed with Helm (not an Argo CD `Application` in this fold
 - Chart: `prometheus-community/kube-prometheus-stack`
 - Release name: `home-kube-prometheus`
 - Namespace: `monitor`
-- Values file: `argocd-apps/monitor/values.yaml`
+- Values file: `monitor/values.yaml`
 
 Istio scrape monitors are managed separately via `argocd-apps/kiali/istio-metrics.yaml`.
 
@@ -32,13 +32,13 @@ helm upgrade --install home-kube-prometheus prometheus-community/kube-prometheus
   --namespace monitor \
   --create-namespace \
   --version 65.5.0 \
-  -f argocd-apps/monitor/values.yaml
+  -f monitor/values.yaml
 ```
 
 ## How to update settings
 
-1. Edit `argocd-apps/monitor/values.yaml`
-2. Re-run `helm upgrade --install ... -f argocd-apps/monitor/values.yaml`
+1. Edit `monitor/values.yaml`
+2. Re-run `helm upgrade --install ... -f monitor/values.yaml`
 
 Common sections to edit:
 - **Dashboards** — `grafana.dashboards`

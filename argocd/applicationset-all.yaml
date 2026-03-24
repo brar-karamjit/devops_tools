@@ -19,10 +19,6 @@ spec:
       # Scanning only directories one level deep inside 'argocd-apps/'
       directories:
       - path: 'argocd-apps/*'
-      - path: 'argocd-apps/cert-manager'
-        exclude: true
-      - path: 'argocd-apps/monitor'
-        exclude: true
   
   # ----------------------------------------------------
   # 2. TEMPLATE: Creates an Argo CD Application for each folder found
