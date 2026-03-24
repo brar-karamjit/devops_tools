@@ -12,14 +12,14 @@ Prometheus stack is managed with Helm (not an Argo CD `Application` in this fold
 - Release name: `home-kube-prometheus`
 - Namespace: `monitor`
 - Values file: `monitor/values.yaml`
-
-Istio scrape monitors are managed separately via `argocd-apps/kiali/istio-metrics.yaml`.
+- Istio scrape monitors: `monitor/istio-metrics.yaml`
 
 ## Files
 
 | File | Purpose |
 |------|---------|
 | `values.yaml` | Helm values for Grafana ingress, dashboard, and Grafana settings |
+| `istio-metrics.yaml` | Istio `PodMonitor` and `ServiceMonitor` for Prometheus scraping |
 | `readme.md` | Install and operations notes |
 
 ## Install / Upgrade
@@ -33,7 +33,19 @@ helm upgrade --install home-kube-prometheus prometheus-community/kube-prometheus
   --create-namespace \
   --version 65.5.0 \
   -f monitor/values.yaml
+
+kubectl apply -f monitor/istio-metrics.yaml
 ```
+
+## Recommended sequence
+
+1. Install Istio (so `istiod` service and sidecar metrics endpoints exist).
+2. Install/upgrade kube-prometheus-stack via Helm (this creates `PodMonitor` / `ServiceMonitor` CRDs).
+3. Apply `monitor/istio-metrics.yaml`.
+
+Notes:
+- Hard prerequisite for applying `istio-metrics.yaml` is Prometheus Operator CRDs from kube-prometheus-stack.
+- Istio should be installed for these monitors to have active scrape targets.
 
 ## How to update settings
 
