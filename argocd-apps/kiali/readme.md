@@ -6,7 +6,11 @@ Kiali is deployed from this folder via the ArgoCD ApplicationSet (`all-apps-gene
 
 - `argocd/applicationset-all.yaml` scans `argocd-apps/*`.
 - Because `kiali` is **not excluded**, ArgoCD auto-creates an Application named `kiali-app`.
-- ArgoCD syncs `argocd-apps/kiali/kiali.yaml` into namespace `kiali`.
+- ArgoCD syncs manifests from `argocd-apps/kiali/`.
+
+This folder also contains Istio monitoring CRs (`PodMonitor` / `ServiceMonitor`) used by Prometheus:
+
+- `istio-metrics.yaml` creates monitors in namespace `monitor` so the `home-kube-prometheus` release can scrape Istio proxy and istiod metrics.
 
 ## Prerequisites
 
@@ -84,4 +88,5 @@ If you get `503` from ingress:
 | File | Purpose |
 | --- | --- |
 | `kiali.yaml` | RBAC, ConfigMap, Deployment, Service, Ingress |
+| `istio-metrics.yaml` | Istio `PodMonitor` and `ServiceMonitor` for Prometheus scraping |
 | `readme.md` | Install and ops notes |
