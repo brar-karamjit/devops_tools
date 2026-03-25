@@ -1,77 +1,42 @@
 # kube-prometheus-stack (monitor)
 
-This folder contains Helm values for deploying [`kube-prometheus-stack`](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) directly with Helm into the `monitor` namespace.
+Helm-managed Prometheus stack for namespace `monitor`.
 
-Grafana is exposed at `https://grafana.karamjitbrar.com`.
+- Values: `monitor/values.yaml`
+- Istio scrape config: `monitor/istio-metrics.yaml`
+- Grafana: `https://grafana.karamjitbrar.com`
 
-## Management model
-
-Prometheus stack is managed with Helm (not an Argo CD `Application` in this folder).
-
-- Chart: `prometheus-community/kube-prometheus-stack`
-- Release name: `home-kube-prometheus`
-- Namespace: `monitor`
-- Values file: `monitor/values.yaml`
-- Istio scrape monitors: `monitor/istio-metrics.yaml`
-
-## Files
-
-| File | Purpose |
-|------|---------|
-| `values.yaml` | Helm values for Grafana ingress, dashboard, and Grafana settings |
-| `istio-metrics.yaml` | Istio `PodMonitor` and `ServiceMonitor` for Prometheus scraping |
-| `readme.md` | Install and operations notes |
-
-## Install / Upgrade
+## Quick start
 
 ```bash
+# 1) Install/upgrade Prometheus stack (creates PodMonitor/ServiceMonitor CRDs)
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
-
 helm upgrade --install home-kube-prometheus prometheus-community/kube-prometheus-stack \
   --namespace monitor \
   --create-namespace \
   --version 65.5.0 \
   -f monitor/values.yaml
 
+# 2) Apply Istio scrape monitors
 kubectl apply -f monitor/istio-metrics.yaml
 ```
 
-## Recommended sequence
+## Order
 
-1. Install Istio (so `istiod` service and sidecar metrics endpoints exist).
-2. Install/upgrade kube-prometheus-stack via Helm (this creates `PodMonitor` / `ServiceMonitor` CRDs).
+1. Install Istio.
+2. Install/upgrade kube-prometheus-stack.
 3. Apply `monitor/istio-metrics.yaml`.
 
-Notes:
-- Hard prerequisite for applying `istio-metrics.yaml` is Prometheus Operator CRDs from kube-prometheus-stack.
-- Istio should be installed for these monitors to have active scrape targets.
+## Update
 
-## How to update settings
+- Edit `monitor/values.yaml`.
+- Re-run the Helm command above.
 
-1. Edit `monitor/values.yaml`
-2. Re-run `helm upgrade --install ... -f monitor/values.yaml`
-
-Common sections to edit:
-- **Dashboards** — `grafana.dashboards`
-- **Ingress / hostname / TLS** — `grafana.ingress`
-- **Grafana settings** — `grafana.grafana.ini`
-
-## Upgrade chart version
-
-1. Change `--version` in the Helm command
-2. Check the [chart changelog](https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/CHANGELOG.md) for breaking changes
-3. Run Helm upgrade
-
-## Verification
+## Verify
 
 ```bash
-# Check running pods
 kubectl get pods -n monitor
-
-# Check Helm release
 helm list -n monitor | grep home-kube-prometheus
-
-# Browse Grafana
 open https://grafana.karamjitbrar.com
 ```
