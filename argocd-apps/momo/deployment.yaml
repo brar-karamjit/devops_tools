@@ -28,8 +28,8 @@ spec:
         - name: momo-sqlite
           mountPath: /data
         env:
-        - name: HELLO_SERVICE_URL
-          value: "http://hello-service.hello"
+        - name: WEATHER_SERVICE_URL
+          value: "http://weather-service.weather"
         - name: DJANGO_SECRET_KEY
           valueFrom:
             secretKeyRef:
