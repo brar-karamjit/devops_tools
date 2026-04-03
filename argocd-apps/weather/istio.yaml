@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: hello
+  name: weather
   labels:
     istio-injection: enabled
 ---
@@ -9,7 +9,7 @@ apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
   name: default
-  namespace: hello
+  namespace: weather
 spec:
   mtls:
     mode: STRICT
@@ -17,10 +17,10 @@ spec:
 apiVersion: networking.istio.io/v1beta1
 kind: DestinationRule
 metadata:
-  name: hello-service-mtls
-  namespace: hello
+  name: weather-service-mtls
+  namespace: weather
 spec:
-  host: hello-service.hello.svc.cluster.local
+  host: weather-service.weather.svc.cluster.local
   trafficPolicy:
     tls:
       mode: ISTIO_MUTUAL
