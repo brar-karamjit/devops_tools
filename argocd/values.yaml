@@ -1,8 +1,4 @@
 # Recommended Refinements for OCI ARM + NGINX
-global:
-  # Ensures Argo components pull the correct arm64 images and land on your ARM nodes
-  nodeSelector:
-    kubernetes.io/arch: arm64
 
 server:
   service:
@@ -37,9 +33,6 @@ configs:
   params:
     server.insecure: true # Matches the extraArgs above
 
-# Explicitly ensure ApplicationSet controller is enabled (it is by default in newer charts, 
-# but good to have in the file for ARM node affinity)
+# Explicitly ensure ApplicationSet controller is enabled (it is by default in newer charts)
 applicationSet:
   enabled: true
-  nodeSelector:
-    kubernetes.io/arch: arm64
