@@ -1,0 +1,21 @@
+config:
+  logLevel: info
+  interval: 2m
+  argocd:
+    serverAddress: argocd-server.argocd.svc.cluster.local
+    grpcWeb: true
+    insecure: true
+
+  registries:
+    - name: ghcr
+      prefix: ghcr.io
+      api_url: https://ghcr.io
+      default: true
+      ping: yes
+
+extraEnv:
+  - name: ARGOCD_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: argocd-image-updater-secret
+        key: argocd.token

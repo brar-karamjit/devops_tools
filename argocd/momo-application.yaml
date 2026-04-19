@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: momo-app
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: momo=ghcr.io/brar-karamjit/momentinmotion:latest
+    argocd-image-updater.argoproj.io/momo.update-strategy: digest
+    argocd-image-updater.argoproj.io/momo.allow-tags: regexp:^latest$
+    argocd-image-updater.argoproj.io/momo.force-update: "true"
+    argocd-image-updater.argoproj.io/write-back-method: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/brar-karamjit/devops_tools
+    targetRevision: HEAD
+    path: argocd-apps/momo
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: momo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true
