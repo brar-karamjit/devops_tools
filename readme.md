@@ -1,6 +1,6 @@
 # DevOps Tools
 
-Operational runbook for building Gitops setup in this cluster and installing needed kubernetes tools needed for functional cluster.
+Operational runbook for building this cluster from a base k3s setup.
 
 ## Cluster Setup
 
@@ -28,7 +28,6 @@ You should see both nodes in `Ready` state before continuing.
 3. Istio
 4. Monitoring (kube-prometheus-stack)
 5. Argo CD + ApplicationSet (deploy `argocd-apps/*`)
-6. Argo CD Image Updater (momo digest tracking)
 
 This order avoids dependency issues:
 - cert-manager HTTP01 solver needs ingress
@@ -128,45 +127,6 @@ Create the ApplicationSet (auto-deploys everything under `argocd-apps/*`):
 kubectl apply -f argocd/applicationset-all.yaml
 ```
 
-Create the dedicated momo Application with Image Updater annotations:
-
-```bash
-kubectl apply -f argocd/momo-application.yaml
-```
-
-## 6) Argo CD Image Updater
-
-Install Image Updater:
-
-```bash
-helm repo add argo https://argoproj.github.io/argo-helm
-helm repo update
-helm upgrade --install argocd-image-updater argo/argocd-image-updater \
-  -n argocd \
-  -f argocd/image-updater-values.yaml
-```
-
-Create token secret for Argo CD API write-back (replace token value):
-
-```bash
-kubectl -n argocd create secret generic argocd-image-updater-secret \
-  --from-literal=argocd.token='<ARGOCD_API_TOKEN>'
-```
-
-How to generate token:
-
-```bash
-argocd account generate-token --account admin
-```
-
-Verify updater logs:
-
-```bash
-kubectl logs -n argocd deploy/argocd-image-updater -f
-```
-
-You should see digest checks for ghcr.io/brar-karamjit/momentinmotion:latest and update actions for momo-app.
-
 ## Quick Verification
 
 ```bash
@@ -175,7 +135,6 @@ kubectl get pods -n cert-manager
 kubectl get pods -n istio-system
 kubectl get pods -n monitor
 kubectl get applications -n argocd
-kubectl get pods -n argocd | grep image-updater
 ```
 
 ## Repo Layout (current)
