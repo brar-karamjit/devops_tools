@@ -1,0 +1,26 @@
+# ESO Helm values
+# Install command:
+#   helm repo add external-secrets https://charts.external-secrets.io
+#   helm repo update
+#   helm upgrade --install external-secrets external-secrets/external-secrets \
+#     -n external-secrets \
+#     --create-namespace \
+#     --set bitwarden-sdk-server.enabled=true \
+#     -f external-secrets/values.yaml \
+#     --wait
+
+installCRDs: true
+
+# Enable the Bitwarden SDK sidecar server - required for the Bitwarden provider
+bitwarden-sdk-server:
+  enabled: true
+
+replicaCount: 1
+
+serviceAccount:
+  create: true
+  name: external-secrets
+
+# Scope ESO to watch all namespaces (needed for ClusterSecretStore)
+scopedNamespace: ""
+scopedRBAC: false

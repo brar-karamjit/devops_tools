@@ -25,13 +25,15 @@ You should see both nodes in `Ready` state before continuing.
 
 1. Ingress controller
 2. cert-manager
-3. Istio
-4. Monitoring (kube-prometheus-stack)
-5. Argo CD + ApplicationSet (deploy `argocd-apps/*`)
+3. External Secrets Operator (ESO) + Bitwarden bootstrap
+4. Istio
+5. Monitoring (kube-prometheus-stack)
+6. Argo CD + ApplicationSet (deploy `argocd-apps/*`)
 
 This order avoids dependency issues:
 - cert-manager HTTP01 solver needs ingress
 - Istio metrics scraping needs Prometheus CRDs
+- ESO Bitwarden provider needs cert-manager for its SDK server TLS cert
 - Argo CD is last to take over GitOps-managed app deployments
 
 ## 1) Ingress Controller
@@ -67,7 +69,34 @@ Apply ClusterIssuer:
 kubectl apply -f cert-manager/cluster-issuer.yaml
 ```
 
-## 3) Istio
+## 3) External Secrets Operator (ESO) + Bitwarden
+
+See `external-secrets/readme.md` for full setup and the Bitwarden secret naming table.
+
+Quick summary:
+```bash
+# Apply SDK server TLS cert (requires cert-manager above)
+kubectl apply -f external-secrets/secret-stores/bitwarden-sdk-tls.yaml
+
+# Bootstrap the Bitwarden machine account token (one-time, never commit real value)
+kubectl -n external-secrets create secret generic bitwarden-access-token \
+  --from-literal=token='<YOUR_TOKEN>'
+
+# Install ESO with Bitwarden SDK server
+helm repo add external-secrets https://charts.external-secrets.io
+helm repo update
+helm upgrade --install external-secrets external-secrets/external-secrets \
+  -n external-secrets \
+  --create-namespace \
+  --set bitwarden-sdk-server.enabled=true \
+  -f external-secrets/values.yaml \
+  --wait
+
+# Fill in caBundle, organizationID, projectID then apply ClusterSecretStore
+kubectl apply -f external-secrets/secret-stores/bitwarden-clustersecretstore.yaml
+```
+
+## 4) Istio
 
 Install Istio base + control plane:
 
@@ -88,7 +117,7 @@ kubectl rollout restart deploy -n hello
 kubectl rollout restart deploy -n momo
 ```
 
-## 4) Monitoring
+## 5) Monitoring
 
 Install kube-prometheus-stack (values in `monitor/values.yaml`):
 
@@ -108,7 +137,7 @@ Apply Istio scrape monitors (requires Prometheus Operator CRDs from previous ste
 kubectl apply -f monitor/istio-metrics.yaml
 ```
 
-## 5) Argo CD + App of Apps
+## 6) Argo CD + App of Apps
 
 Install Argo CD:
 
@@ -140,7 +169,8 @@ kubectl get applications -n argocd
 ## Repo Layout (current)
 
 - `argocd/` → Argo CD Helm values + ApplicationSet
-- `argocd-apps/` → GitOps-managed app manifests
+- `argocd-apps/` → GitOps-managed app manifests (each app folder contains ExternalSecret if it has secrets)
 - `cert-manager/` → Helm values + ClusterIssuer
+- `external-secrets/` → ESO Helm values + ClusterSecretStore + bootstrap runbook
 - `istio/` → Istio setup notes
 - `monitor/` → Prometheus Helm values + Istio scrape monitors

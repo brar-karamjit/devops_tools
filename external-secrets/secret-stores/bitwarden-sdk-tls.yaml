@@ -1,0 +1,33 @@
+# Self-signed cert issuer for the Bitwarden SDK server TLS endpoint.
+# The ESO Bitwarden provider communicates with bitwarden-sdk-server over HTTPS,
+# so the SDK server must have a valid TLS certificate.
+# This issues a self-signed cert used as the CA bundle in the ClusterSecretStore.
+#
+# Apply after cert-manager is installed and before applying ClusterSecretStore:
+#   kubectl apply -f external-secrets/secret-stores/bitwarden-sdk-tls.yaml
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: bitwarden-sdk-selfsigned
+  namespace: external-secrets
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: bitwarden-sdk-server-tls
+  namespace: external-secrets
+spec:
+  isCA: true
+  secretName: bitwarden-sdk-server-tls
+  commonName: bitwarden-sdk-server.external-secrets.svc.cluster.local
+  dnsNames:
+    - bitwarden-sdk-server
+    - bitwarden-sdk-server.external-secrets
+    - bitwarden-sdk-server.external-secrets.svc
+    - bitwarden-sdk-server.external-secrets.svc.cluster.local
+  issuerRef:
+    name: bitwarden-sdk-selfsigned
+    kind: Issuer

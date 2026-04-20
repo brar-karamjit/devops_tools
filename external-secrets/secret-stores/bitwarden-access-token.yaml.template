@@ -1,0 +1,26 @@
+# Bootstrap: Bitwarden Machine Account access token
+# ------------------------------------------------------------------------------
+# This file is a TEMPLATE. Never commit real values.
+# Run this manually on each new cluster BEFORE applying the ClusterSecretStore:
+#
+#   kubectl -n external-secrets create secret generic bitwarden-access-token \
+#     --from-literal=token='<YOUR_BITWARDEN_MACHINE_ACCOUNT_TOKEN>'
+#
+# How to get the token:
+#   1. Log into Bitwarden Secrets Manager → your organisation
+#   2. Settings → Machine Accounts → create one scoped to your project
+#   3. Generate an access token for that machine account
+#   4. Paste it in the command above
+#
+# This secret is intentionally NOT managed by Argo CD / ESO.
+# It is the single bootstrap credential that must be applied manually.
+# All other secrets flow from Bitwarden through ESO after this is in place.
+# ------------------------------------------------------------------------------
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bitwarden-access-token
+  namespace: external-secrets
+type: Opaque
+stringData:
+  token: REPLACE_WITH_REAL_TOKEN   # <-- never commit a real value here
