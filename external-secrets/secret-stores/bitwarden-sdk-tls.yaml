@@ -21,7 +21,7 @@ metadata:
   namespace: external-secrets
 spec:
   isCA: true
-  secretName: bitwarden-sdk-server-tls
+  secretName: bitwarden-tls-certs
   commonName: bitwarden-sdk-server.external-secrets.svc.cluster.local
   dnsNames:
     - bitwarden-sdk-server

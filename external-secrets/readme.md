@@ -51,7 +51,7 @@ App pod reads Secret via secretKeyRef (unchanged)
    ```
 5. Get the CA bundle from the generated TLS cert:
    ```bash
-   kubectl -n external-secrets get secret bitwarden-sdk-server-tls \
+   kubectl -n external-secrets get secret bitwarden-tls-certs \
      -o jsonpath='{.data.ca\.crt}'
    ```
    Paste the base64 output into `caBundle` in `bitwarden-clustersecretstore.yaml`.
