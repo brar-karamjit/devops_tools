@@ -69,8 +69,8 @@ App pod reads Secret via secretKeyRef (unchanged)
 
 | App   | Bitwarden Secret Name        | k8s Secret Key       |
 |-------|------------------------------|----------------------|
-| momo  | momo-django-secret-key       | django-secret-key    |
-| momo  | momo-gemini-api-key          | gemini-api-key       |
+| momo  | django-secret-key       | django-secret-key    |
+| momo  | gemini-api-key          | gemini-api-key       |
 | kiali | kiali-basic-auth-htpasswd    | auth                 |
 
 ## Verification After Cluster Rebuild
