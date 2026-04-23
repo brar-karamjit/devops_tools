@@ -38,10 +38,7 @@ spec:
             - containerPort: 5432
           env:
             - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: momo-db-secrets
-                  key: database
+              value: momo_db
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
