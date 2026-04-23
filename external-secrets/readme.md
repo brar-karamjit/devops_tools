@@ -33,11 +33,8 @@ App pod reads Secret via secretKeyRef (unchanged)
    ```bash
    kubectl apply -f external-secrets/secret-stores/bitwarden-sdk-tls.yaml
    ```
-3. Bootstrap access token secret (one-time, never commit real value):
-   ```bash
-   kubectl -n external-secrets create secret generic bitwarden-access-token \
-     --from-literal=token='<YOUR_MACHINE_ACCOUNT_TOKEN>'
-   ```
+
+
 4. Install ESO with Bitwarden SDK server enabled:
    ```bash
    helm repo add external-secrets https://charts.external-secrets.io
