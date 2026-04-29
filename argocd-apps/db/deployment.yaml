@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: momo-db
+  name: n8n-db
   namespace: db
 spec:
   selector:
-    app: momo-db
+    app: n8n-db
   ports:
     - protocol: TCP
       port: 5432
@@ -15,20 +15,20 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: momo-db
+  name: n8n-db
   namespace: db
   labels:
-    app: momo-db
+    app: n8n-db
 spec:
-  serviceName: momo-db
+  serviceName: n8n-db
   replicas: 1
   selector:
     matchLabels:
-      app: momo-db
+      app: n8n-db
   template:
     metadata:
       labels:
-        app: momo-db
+        app: n8n-db
     spec:
       containers:
         - name: postgres
@@ -38,16 +38,16 @@ spec:
             - containerPort: 5432
           env:
             - name: POSTGRES_DB
-              value: momo_db
+              value: n8n
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: momo-db-secrets
+                  name: n8n-db-secrets
                   key: username
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: momo-db-secrets
+                  name: n8n-db-secrets
                   key: password
           volumeMounts:
             - name: postgres-data
