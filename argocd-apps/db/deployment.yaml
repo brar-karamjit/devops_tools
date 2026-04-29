@@ -27,6 +27,8 @@ spec:
       app: n8n-db
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
       labels:
         app: n8n-db
     spec:
