@@ -38,15 +38,36 @@ This order avoids dependency issues:
 
 ## 1) Ingress Controller
 
-If using k3s default Traefik, disable it first (as per your k3s setup), then install ingress-nginx:
+If using k3s default Traefik, disable it first (as per your k3s setup), then install ingress-nginx.
+
+If your Oracle Load Balancer backend set depends on specific node ports, pin them during install so they never change on upgrade/recreate.
 
 ```bash
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
 helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
   --namespace ingress-nginx \
-  --create-namespace
+  --create-namespace \
+  --set controller.service.type=LoadBalancer \
+  --set controller.service.nodePorts.http=32319 \
+  --set controller.service.nodePorts.https=30418
 ```
+
+Verify ports:
+
+```bash
+kubectl -n ingress-nginx get svc ingress-nginx-controller -o wide
+# Expected PORT(S): 80:32319/TCP,443:30418/TCP
+
+kubectl -n ingress-nginx get svc ingress-nginx-controller \
+  -o jsonpath='{.spec.ports[?(@.port==80)].nodePort}{"\n"}{.spec.ports[?(@.port==443)].nodePort}{"\n"}'
+```
+
+Notes:
+
+- Keep `controller.service.type=LoadBalancer` so the service still exposes 80/443 and assigns an external IP.
+- OCI backend sets should target the pinned node ports (for example `32319` and `30418`) on each Kubernetes node.
+- If you ever need different ports, update both Helm values and OCI backend set ports together.
 
 ## 2) cert-manager
 
@@ -174,3 +195,63 @@ kubectl get applications -n argocd
 - `external-secrets/` → ESO Helm values + ClusterSecretStore + bootstrap runbook
 - `istio/` → Istio setup notes
 - `monitor/` → Prometheus Helm values + Istio scrape monitors
+
+## Resume Project Write-Up
+
+This repository is a **personal homelab project** that demonstrates production-like Kubernetes platform patterns.
+
+### Project Title Ideas
+
+- Kubernetes Homelab Platform Automation (GitOps)
+- GitOps-Based Kubernetes Platform (Argo CD + Istio)
+- Secure Kubernetes Homelab with External Secrets and Observability
+
+### One-Line Resume Summary
+
+Built a GitOps-driven Kubernetes homelab platform using Argo CD, cert-manager, External Secrets (Bitwarden), Istio, and Prometheus/Grafana to automate secure multi-service deployments and cluster operations.
+
+### Role-Targeted Resume Bullets
+
+#### DevOps Engineer
+
+- Built an Argo CD `ApplicationSet` pattern that auto-discovers and deploys apps from `argocd-apps/*`, with automated sync, prune, self-heal, and namespace creation.
+- Standardized cluster bootstrap using Helm and Kubernetes manifests for ingress, TLS, secret management, service mesh, monitoring, and GitOps app delivery.
+- Integrated External Secrets Operator with Bitwarden-backed `ClusterSecretStore` and TLS-secured SDK server to avoid storing application secrets in Git.
+
+#### Site Reliability Engineer (SRE)
+
+- Implemented declarative, repeatable cluster provisioning in a homelab to reduce manual drift and improve recovery consistency after environment rebuilds.
+- Enabled self-healing GitOps sync policies (`prune`, `selfHeal`, and server-side apply) to continuously reconcile workloads to desired state.
+- Added observability and traffic visibility with Prometheus scraping for Istio components and Kiali integration for service graph and mesh troubleshooting.
+
+#### Platform Engineer
+
+- Designed reusable platform primitives across namespaces: ingress + DNS routing, automated TLS (`cert-manager`), shared secret store integration, and service mesh onboarding.
+- Built an app-onboarding model where each service folder under `argocd-apps/` can be promoted through a consistent Kubernetes/GitOps structure.
+- Operationalized cross-cutting platform services (Argo CD, ESO, Istio, monitoring) to provide a foundation for deploying both stateless and stateful workloads.
+
+### Homelab-Safe Wording Guide
+
+Use phrasing like:
+
+- "personal homelab"
+- "production-like patterns"
+- "self-hosted Kubernetes environment"
+- "designed and implemented"
+
+Avoid phrasing like:
+
+- "owned production infrastructure"
+- "supported customer-facing SLA"
+- "reduced company cloud costs"
+
+### Interview Support
+
+For stronger resume credibility, add supporting evidence in this repo:
+
+- Argo CD screenshot showing app health/sync across generated applications
+- Kiali service graph screenshot
+- Grafana dashboard screenshot for Istio/control-plane metrics
+- `kubectl get applications -n argocd` and `kubectl get externalsecret -A` output samples
+
+For copy-paste versions (concise and detailed), use `resume-project.md`.
