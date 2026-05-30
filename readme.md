@@ -19,6 +19,12 @@ kubectl get nodes -o wide
 kubectl get pods -A
 ```
 
+Taint worker2 node so that only client pods go there and are isolated:
+
+```bash
+kubectl taint nodes worker2 dedicated=client:NoSchedule
+```
+
 You should see both nodes in `Ready` state before continuing.
 
 ## Install Order (from this repo baseline)
@@ -51,6 +57,10 @@ helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
   --set controller.service.type=LoadBalancer \
   --set controller.service.nodePorts.http=32319 \
   --set controller.service.nodePorts.https=30418
+  --set "global.tolerations[0].key=dedicated" \
+  --set "global.tolerations[0].operator=Equal" \
+  --set "global.tolerations[0].value=client" \
+  --set "global.tolerations[0].effect=NoSchedule"
 ```
 
 Verify ports:
