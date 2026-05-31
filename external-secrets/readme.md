@@ -28,39 +28,92 @@ App pod reads Secret via secretKeyRef (unchanged)
 
 ## Install Order
 
-1. cert-manager (already in this repo)
-2. Apply bitwarden SDK TLS cert:
-   ```bash
-   kubectl apply -f external-secrets/secret-stores/bitwarden-sdk-tls.yaml
-   ```
+> Install ESO + Bitwarden before Argo CD.
+>
+> Argo CD can apply `ExternalSecret` manifests, but those resources cannot produce real Kubernetes `Secret` objects until the ESO controller and the Bitwarden `ClusterSecretStore` already exist and are healthy.
 
+### 1. Install `cert-manager`
 
-4. Install ESO with Bitwarden SDK server enabled:
-   ```bash
-   helm repo add external-secrets https://charts.external-secrets.io
-   helm repo update
-   helm upgrade --install external-secrets external-secrets/external-secrets \
-     -n external-secrets \
-     --create-namespace \
-     --set bitwarden-sdk-server.enabled=true \
-     -f external-secrets/values.yaml \
-     --wait
-   ```
-5. Get the CA bundle from the generated TLS cert:
-   ```bash
-   kubectl -n external-secrets get secret bitwarden-tls-certs \
-     -o jsonpath='{.data.ca\.crt}'
-   ```
-   Paste the base64 output into `caBundle` in `bitwarden-clustersecretstore.yaml`.
+Purpose: issues the TLS certificate used by the in-cluster Bitwarden SDK server.
 
-6. Fill in your org/project IDs in `bitwarden-clustersecretstore.yaml` then apply:
-   ```bash
-   kubectl apply -f external-secrets/secret-stores/bitwarden-clustersecretstore.yaml
-   ```
-7. Verify store is ready:
-   ```bash
-   kubectl get clustersecretstore bitwarden-secretsmanager
-   ```
+### 2. Create the `external-secrets` namespace
+
+Purpose: gives ESO and the Bitwarden SDK server a dedicated place to run.
+
+```bash
+kubectl create namespace external-secrets
+```
+
+### 3. Apply the Bitwarden SDK TLS certificate manifest
+
+Purpose: creates the certificate resource that secures ESO's HTTPS connection to the Bitwarden SDK server.
+
+```bash
+kubectl apply -f external-secrets/secret-stores/bitwarden-sdk-tls.yaml
+```
+
+### 4. Create the Bitwarden machine account token secret
+
+Purpose: stores the Bitwarden access token in Kubernetes so the SDK server can authenticate to Bitwarden Secrets Manager.
+
+```bash
+kubectl -n external-secrets create secret generic bitwarden-access-token \
+  --from-literal=token='<YOUR_TOKEN>'
+```
+
+### 5. Install ESO with the Bitwarden SDK server enabled
+
+Purpose: deploys the ESO controller that watches `ExternalSecret` resources and the Bitwarden SDK server that talks to Bitwarden.
+
+```bash
+helm repo add external-secrets https://charts.external-secrets.io
+helm repo update
+helm upgrade --install external-secrets external-secrets/external-secrets \
+  -n external-secrets \
+  --create-namespace \
+  --set bitwarden-sdk-server.enabled=true \
+  -f external-secrets/values.yaml \
+  --wait
+```
+
+### 6. Get the CA bundle from the generated TLS secret
+
+Purpose: extracts the CA data ESO will trust when calling the Bitwarden SDK server over HTTPS.
+
+```bash
+kubectl -n external-secrets get secret bitwarden-tls-certs \
+  -o jsonpath='{.data.ca\.crt}'
+```
+
+Paste the base64 output into `caBundle` in `bitwarden-clustersecretstore.yaml`.
+
+### 7. Fill in and apply `bitwarden-clustersecretstore.yaml`
+
+Purpose: creates the cluster-wide connection definition ESO uses to know where Bitwarden is and how to read your secrets.
+
+Set these fields first:
+
+- `caBundle`
+- `organizationID`
+- `projectID`
+
+Then apply it:
+
+```bash
+kubectl apply -f external-secrets/secret-stores/bitwarden-clustersecretstore.yaml
+```
+
+### 8. Verify the `ClusterSecretStore` is ready
+
+Purpose: confirms ESO can reach Bitwarden successfully before any app tries to consume secrets.
+
+```bash
+kubectl get clustersecretstore bitwarden-secretsmanager
+```
+
+### 9. Install Argo CD after ESO + Bitwarden is working
+
+Purpose: once the secret backend is healthy, Argo CD can safely deploy app manifests that include `ExternalSecret` resources.
 
 ## Bitwarden Secret Naming Convention
 

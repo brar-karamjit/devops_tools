@@ -15,6 +15,8 @@ Operational runbook for building this cluster from a base k3s setup.
 ### Verify baseline
 
 ```bash
+ssh master node
+clone https://github.com/brar-karamjit/devops_tools
 kubectl get nodes -o wide
 kubectl get pods -A
 ```
@@ -106,6 +108,7 @@ See `external-secrets/readme.md` for full setup and the Bitwarden secret naming 
 
 Quick summary:
 ```bash
+kubectl create namespace external-secrets
 # Apply SDK server TLS cert (requires cert-manager above)
 kubectl apply -f external-secrets/secret-stores/bitwarden-sdk-tls.yaml
 
