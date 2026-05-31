@@ -6,7 +6,7 @@ Operational runbook for building this cluster from a base k3s setup.
 
 ### Prerequisites
 
-- 2 VMs: one control-plane and one worker
+- 3 VMs: one control-plane and two workers
 - k3s installed and nodes joined
 - External load balancer configured and pointing to the cluster ingress entry
 - `kubectl` and `helm` installed on your admin machine
