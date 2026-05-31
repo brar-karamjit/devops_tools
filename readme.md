@@ -139,15 +139,6 @@ helm upgrade --install istio-base istio/base -n istio-system
 helm upgrade --install istiod istio/istiod -n istio-system
 ```
 
-Enable sidecar injection for app namespaces and restart workloads:
-
-```bash
-kubectl label namespace hello istio-injection=enabled --overwrite
-kubectl label namespace momo istio-injection=enabled --overwrite
-kubectl rollout restart deploy -n hello
-kubectl rollout restart deploy -n momo
-```
-
 ## 5) Monitoring
 
 Install kube-prometheus-stack (values in `monitor/values.yaml`):
