@@ -61,6 +61,6 @@ spec:
             port:
               number: 80
   tls:
-  - secretName: k8s-tls
+  - secretName: weather-tls
     hosts:
     - weather.karamjitbrar.com
