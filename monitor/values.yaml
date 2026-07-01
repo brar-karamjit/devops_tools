@@ -1,6 +1,27 @@
 fullnameOverride: home-kube-prometheus
 
+common:
+  nodeSelector:
+    node-role.kubernetes.io/worker: "true"
+  tolerations: []
+
+prometheusOperator:
+  nodeSelector:
+    node-role.kubernetes.io/worker: "true"
+
+prometheus:
+  prometheusSpec:
+    nodeSelector:
+      node-role.kubernetes.io/worker: "true"
+
+alertmanager:
+  alertmanagerSpec:
+    nodeSelector:
+      node-role.kubernetes.io/worker: "true"
+
 grafana:
+  nodeSelector:
+    node-role.kubernetes.io/worker: "true"
   ingress:
     enabled: true
     ingressClassName: nginx

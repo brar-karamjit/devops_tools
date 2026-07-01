@@ -156,6 +156,8 @@ helm upgrade --install home-kube-prometheus prometheus-community/kube-prometheus
   -f monitor/values.yaml
 ```
 
+The monitoring stack is now configured to prefer the labeled worker node (`node-role.kubernetes.io/worker=true`) for Prometheus, Alertmanager, Grafana, and the operator components.
+
 Apply Istio scrape monitors (requires Prometheus Operator CRDs from previous step):
 
 ```bash
@@ -174,6 +176,8 @@ helm upgrade --install argocd argo/argo-cd \
   -n argocd \
   --create-namespace
 ```
+
+The Argo CD chart is now configured to prefer the worker1 node for the server, repo server, ApplicationSet, Dex, and Redis components.
 After reaching the UI the first time you can login with username: admin and the random password generated during the installation. You can find the password by running:
 
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d

@@ -1,6 +1,12 @@
 # Recommended Refinements for OCI ARM + NGINX
 
+global:
+  nodeSelector:
+    kubernetes.io/hostname: worker1
+
 server:
+  nodeSelector:
+    kubernetes.io/hostname: worker1
   service:
     type: ClusterIP
 
@@ -33,6 +39,20 @@ configs:
   params:
     server.insecure: true # Matches the extraArgs above
 
+repoServer:
+  nodeSelector:
+    kubernetes.io/hostname: worker1
+
 # Explicitly ensure ApplicationSet controller is enabled (it is by default in newer charts)
 applicationSet:
   enabled: true
+  nodeSelector:
+    kubernetes.io/hostname: worker1
+
+dex:
+  nodeSelector:
+    kubernetes.io/hostname: worker1
+
+redis:
+  nodeSelector:
+    kubernetes.io/hostname: worker1
