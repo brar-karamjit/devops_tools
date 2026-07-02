@@ -46,4 +46,3 @@ kubectl get clusterissuer letsencrypt-prod
 ## Notes
 
 - `ClusterIssuer` is intentionally separate from Helm values; upstream chart values configure cert-manager components, not environment-specific issuer resources.
-- If you need staging certs too, add another manifest (for example `cluster-issuer-staging.yaml`) and apply it the same way.
