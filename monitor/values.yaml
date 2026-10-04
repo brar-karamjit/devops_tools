@@ -3,25 +3,60 @@ fullnameOverride: home-kube-prometheus
 common:
   nodeSelector:
     node-role.kubernetes.io/worker: "true"
-  tolerations: []
 
 prometheusOperator:
   nodeSelector:
     node-role.kubernetes.io/worker: "true"
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]
 
 prometheus:
   prometheusSpec:
     nodeSelector:
       node-role.kubernetes.io/worker: "true"
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+                - key: workload
+                  operator: In
+                  values: [platform]
 
 alertmanager:
   alertmanagerSpec:
     nodeSelector:
       node-role.kubernetes.io/worker: "true"
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+                - key: workload
+                  operator: In
+                  values: [platform]
 
 grafana:
   nodeSelector:
     node-role.kubernetes.io/worker: "true"
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]
   ingress:
     enabled: true
     ingressClassName: nginx
@@ -45,3 +80,14 @@ grafana:
     auth.anonymous:
       enabled: true
       org_role: Viewer
+
+kube-state-metrics:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]

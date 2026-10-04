@@ -179,6 +179,15 @@ spec:
       labels:
         app: home
     spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [apps]
       containers:
       - name: nginx
         image: nginx:alpine

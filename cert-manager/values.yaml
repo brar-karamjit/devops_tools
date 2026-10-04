@@ -1,2 +1,34 @@
 crds:
   enabled: true
+
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: workload
+              operator: In
+              values: [platform]
+
+webhook:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]
+
+cainjector:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]

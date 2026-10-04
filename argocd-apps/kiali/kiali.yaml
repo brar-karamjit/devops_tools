@@ -78,6 +78,15 @@ spec:
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [platform]
       serviceAccountName: kiali
       containers:
         - name: kiali

@@ -4,9 +4,29 @@ global:
   nodeSelector:
     kubernetes.io/hostname: worker1
 
+controller:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]
+
 server:
   nodeSelector:
     kubernetes.io/hostname: worker1
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]
   service:
     type: ClusterIP
 
@@ -42,17 +62,53 @@ configs:
 repoServer:
   nodeSelector:
     kubernetes.io/hostname: worker1
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]
 
 # Explicitly ensure ApplicationSet controller is enabled (it is by default in newer charts)
 applicationSet:
   enabled: true
   nodeSelector:
     kubernetes.io/hostname: worker1
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]
 
 dex:
   nodeSelector:
     kubernetes.io/hostname: worker1
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]
 
 redis:
   nodeSelector:
     kubernetes.io/hostname: worker1
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]

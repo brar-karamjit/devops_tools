@@ -21,12 +21,6 @@ kubectl get nodes -o wide
 kubectl get pods -A
 ```
 
-Taint worker2 node so that only client pods go there and are isolated:
-
-```bash
-kubectl taint nodes worker2 dedicated=client:NoSchedule
-```
-
 You should see both nodes in `Ready` state before continuing.
 
 ## Install Order (from this repo baseline)
@@ -58,11 +52,8 @@ helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
   --create-namespace \
   --set controller.service.type=LoadBalancer \
   --set controller.service.nodePorts.http=32319 \
-  --set controller.service.nodePorts.https=30418
-  --set "global.tolerations[0].key=dedicated" \
-  --set "global.tolerations[0].operator=Equal" \
-  --set "global.tolerations[0].value=client" \
-  --set "global.tolerations[0].effect=NoSchedule"
+  --set controller.service.nodePorts.https=30418 \
+  --set controller.nodeSelector.workload=platform
 ```
 
 Verify ports:
@@ -139,7 +130,9 @@ kubectl create namespace istio-system
 helm repo add istio https://istio-release.storage.googleapis.com/charts
 helm repo update
 helm upgrade --install istio-base istio/base -n istio-system
-helm upgrade --install istiod istio/istiod -n istio-system
+helm upgrade --install istiod istio/istiod \
+  -n istio-system \
+  -f istio/istiod-values.yaml
 ```
 
 ## 5) Monitoring
@@ -156,7 +149,7 @@ helm upgrade --install home-kube-prometheus prometheus-community/kube-prometheus
   -f monitor/values.yaml
 ```
 
-The monitoring stack is now configured to prefer the labeled worker node (`node-role.kubernetes.io/worker=true`) for Prometheus, Alertmanager, Grafana, and the operator components.
+The monitoring stack uses preferred affinity for nodes labeled `workload=platform` on its schedulable components. The node-exporter DaemonSet remains unaffected.
 
 Apply Istio scrape monitors (requires Prometheus Operator CRDs from previous step):
 
@@ -177,7 +170,7 @@ helm upgrade --install argocd argo/argo-cd \
   --create-namespace
 ```
 
-The Argo CD chart is now configured to prefer the worker1 node for the server, repo server, ApplicationSet, Dex, and Redis components.
+The Argo CD chart has preferred affinity for nodes labeled `workload=platform` on its components; existing node selectors in the values file are retained.
 After reaching the UI the first time you can login with username: admin and the random password generated during the installation. You can find the password by running:
 
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
@@ -205,7 +198,7 @@ kubectl get applications -n argocd
 - `argocd-apps/` → GitOps-managed app manifests (each app folder contains ExternalSecret if it has secrets)
 - `cert-manager/` → Helm values + ClusterIssuer
 - `external-secrets/` → ESO Helm values + ClusterSecretStore + bootstrap runbook
-- `istio/` → Istio setup notes
+- `istio/` → Istiod Helm values + setup notes
 - `monitor/` → Prometheus Helm values + Istio scrape monitors
 
 ## Resume Project Write-Up
