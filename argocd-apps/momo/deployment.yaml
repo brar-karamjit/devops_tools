@@ -17,6 +17,15 @@ spec:
       labels:
         app: momo
     spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [apps]
       containers:
       - name: momo-app
         # Pulling the application image from GHCR

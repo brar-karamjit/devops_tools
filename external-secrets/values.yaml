@@ -9,13 +9,65 @@
 #     -f external-secrets/values.yaml \
 #     --wait
 
+global:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]
+
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+            - key: workload
+              operator: In
+              values: [platform]
+
 installCRDs: true
 
 # Enable the Bitwarden SDK sidecar server - required for the Bitwarden provider
 bitwarden-sdk-server:
   enabled: true
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]
 
 replicaCount: 1
+
+webhook:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]
+
+certController:
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: workload
+                operator: In
+                values: [platform]
 
 serviceAccount:
   create: true

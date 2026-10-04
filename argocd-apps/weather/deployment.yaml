@@ -16,6 +16,15 @@ spec:
       labels:
         app: weather
     spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: workload
+                    operator: In
+                    values: [apps]
       containers:
       - name: weather
         image: ghcr.io/brar-karamjit/weather-service:latest
